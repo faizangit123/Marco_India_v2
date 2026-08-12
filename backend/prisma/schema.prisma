@@ -1,0 +1,123 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         String    @id @default(uuid()) @db.Uuid
+  email      String    @unique
+  name       String    @default("")
+  phone      String    @default("")
+  avatar     String?
+  googleId   String    @default("") @map("google_id")
+  password   String    @default("")
+  isActive   Boolean   @default(true) @map("is_active")
+  isStaff    Boolean   @default(false) @map("is_staff")
+  dateJoined DateTime  @default(now()) @map("date_joined")
+
+  inquiries     Inquiry[]
+  comments      Comment[]
+  refreshTokens RefreshToken[]
+
+  @@map("users")
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid()) @db.Uuid
+  token     String   @unique
+  userId    String   @map("user_id") @db.Uuid
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+  blacklisted Boolean @default(false)
+
+  @@map("refresh_tokens")
+}
+
+model Inquiry {
+  id          String   @id @default(uuid()) @db.Uuid
+  userId      String?  @map("user_id") @db.Uuid
+  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  name        String
+  phone       String
+  serviceType String   @map("service_type")
+  status      String   @default("submitted")
+  adminNotes  String   @default("") @map("admin_notes")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("inquiries")
+}
+
+model Comment {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  page      String
+  text      String
+  isVisible Boolean  @default(true) @map("is_visible")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([page])
+  @@map("comments")
+}
+
+model GalleryItem {
+  id          String   @id @default(uuid()) @db.Uuid
+  title       String
+  description String   @default("")
+  image       String
+  category    String
+  location    String   @default("")
+  isFeatured  Boolean  @default(false) @map("is_featured")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@map("gallery_items")
+}
+
+model GallerySetting {
+  id     Int     @id @default(1)
+  active Boolean @default(true)
+
+  @@map("gallery_settings")
+}
+
+model Testimonial {
+  id        String   @id @default(uuid()) @db.Uuid
+  name      String
+  role      String   @default("")
+  company   String   @default("")
+  text      String
+  rating    Int      @default(5)
+  avatar    String?
+  isActive  Boolean  @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("testimonials")
+}
+
+model TestimonialSetting {
+  id     Int     @id @default(1)
+  active Boolean @default(true)
+
+  @@map("testimonial_settings")
+}
+
+model ContactMessage {
+  id          String   @id @default(uuid()) @db.Uuid
+  name        String
+  email       String
+  phone       String   @default("")
+  serviceType String   @map("service_type")
+  message     String
+  status      String   @default("new")
+  adminNotes  String   @default("") @map("admin_notes")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("contact_messages")
+}
