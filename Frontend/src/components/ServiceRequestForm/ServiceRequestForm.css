@@ -1,37 +1,40 @@
 /* ============================================
-   Service Request Form — Sidebar Widget
+   Service Request Form — Premium Light Card
    ============================================ */
 
 .srf {
   width: 100%;
   padding: var(--spacing-xl);
-  background: rgba(17, 24, 39, 0.85);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-xl);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  background: var(--color-bg-card, #FFFFFF);
+  border: 1px solid var(--color-border, #E5E2DB);
+  border-radius: var(--radius-xl, 16px);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.06);
+  transition: box-shadow var(--transition-base, 300ms ease);
+}
+
+.srf:hover {
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.09);
 }
 
 /* ---- Heading ---- */
 .srf__heading {
-  font-family: var(--font-display);
-  font-size: 1.15rem;
+  font-family: var(--font-display, 'Space Grotesk', sans-serif);
+  font-size: 1.2rem;
   font-weight: 700;
-  color: var(--color-text-primary);
+  color: var(--color-text-primary, #1A1A1A);
   margin-bottom: 0.4rem;
   text-align: center;
   letter-spacing: -0.01em;
 }
 
 .srf__subheading {
-  font-size: 0.8rem;
-  color: var(--color-text-muted);
+  font-size: 0.82rem;
+  color: var(--color-text-secondary, #555555);
   text-align: center;
-  margin-bottom: var(--spacing-xl);
+  margin-bottom: var(--spacing-lg);
 }
 
-/* ---- Field Grid — always vertical in sidebar ---- */
+/* ---- Field Grid ---- */
 .srf__fields {
   display: flex;
   flex-direction: column;
@@ -47,7 +50,7 @@
 .srf__label {
   font-size: 0.75rem;
   font-weight: 600;
-  color: var(--color-text-secondary);
+  color: var(--color-text-secondary, #555555);
   margin-bottom: 0.35rem;
   letter-spacing: 0.03em;
   text-transform: uppercase;
@@ -58,57 +61,57 @@
   width: 100%;
   padding: 0.75rem 1rem;
   font-size: 0.9rem;
-  font-family: var(--font-body);
-  color: var(--color-text-primary);
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
+  font-family: var(--font-body, 'Inter', sans-serif);
+  color: var(--color-text-primary, #1A1A1A);
+  background: var(--color-bg-secondary, #F5F3EE);
+  border: 1px solid var(--color-border, #E5E2DB);
+  border-radius: var(--radius-md, 8px);
   outline: none;
-  transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast);
+  transition: border-color 200ms ease, box-shadow 200ms ease, background 200ms ease;
 }
 
 .srf__input::placeholder {
-  color: var(--color-text-muted);
+  color: var(--color-text-muted, #888888);
 }
 
 .srf__input:focus {
-  border-color: var(--color-accent);
-  background: rgba(0, 212, 255, 0.04);
-  box-shadow: 0 0 0 3px var(--color-accent-glow);
+  border-color: var(--color-accent, #C75B2B);
+  background: #FFFFFF;
+  box-shadow: 0 0 0 3px rgba(199, 91, 43, 0.12);
 }
 
 .srf__input--error {
-  border-color: var(--color-error);
+  border-color: var(--color-error, #C43E3E);
 }
 
 .srf__input--error:focus {
-  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
+  box-shadow: 0 0 0 3px rgba(196, 62, 62, 0.15);
 }
 
 /* ---- Select ---- */
 .srf__select {
   appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23555555' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 0.9rem center;
-  background-color: rgba(255, 255, 255, 0.04);
+  background-color: var(--color-bg-secondary, #F5F3EE);
   padding-right: 2.5rem;
   cursor: pointer;
 }
 
 .srf__select--placeholder {
-  color: var(--color-text-muted);
+  color: var(--color-text-muted, #888888);
 }
 
 .srf__select option {
-  background: var(--color-bg-secondary);
-  color: var(--color-text-primary);
+  background: #FFFFFF;
+  color: var(--color-text-primary, #1A1A1A);
 }
 
 /* ---- Error Text ---- */
 .srf__error {
   font-size: 0.74rem;
-  color: var(--color-error);
+  color: var(--color-error, #C43E3E);
   margin-top: 5px;
   padding-left: 2px;
   display: flex;
@@ -124,22 +127,24 @@
   gap: var(--spacing-sm);
   width: 100%;
   padding: 0.85rem 1.5rem;
-  margin-top: var(--spacing-sm);
-  font-size: 0.95rem;
+  margin-top: var(--spacing-xs);
+  font-size: 0.88rem;
   font-weight: 700;
-  font-family: var(--font-body);
-  color: #fff;
-  background: var(--gradient-primary);
+  font-family: var(--font-body, 'Inter', sans-serif);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #FFFFFF;
+  background: var(--color-accent, #C75B2B);
   border: none;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-md, 8px);
   cursor: pointer;
-  transition: opacity var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
-  letter-spacing: 0.02em;
+  transition: background 200ms ease, transform 200ms ease, box-shadow 200ms ease;
 }
 
 .srf__submit:hover:not(:disabled) {
+  background: var(--color-accent-hover, #B04E24);
   transform: translateY(-2px);
-  box-shadow: var(--shadow-accent);
+  box-shadow: 0 4px 16px rgba(199, 91, 43, 0.25);
 }
 
 .srf__submit:active:not(:disabled) {
@@ -149,10 +154,6 @@
 .srf__submit:disabled {
   opacity: 0.7;
   cursor: not-allowed;
-}
-
-.srf__submit:active{
-  scale: 0.95;
 }
 
 /* ---- Divider ---- */
@@ -168,12 +169,12 @@
   content: '';
   flex: 1;
   height: 1px;
-  background: var(--color-border);
+  background: var(--color-border, #E5E2DB);
 }
 
 .srf__divider span {
   font-size: 0.72rem;
-  color: var(--color-text-muted);
+  color: var(--color-text-muted, #888888);
   white-space: nowrap;
 }
 
@@ -181,12 +182,12 @@
 .srf__hint {
   text-align: center;
   font-size: 0.78rem;
-  color: var(--color-text-muted);
+  color: var(--color-text-secondary, #555555);
   margin-top: var(--spacing-md);
 }
 
 .srf__hint a {
-  color: var(--color-accent);
+  color: var(--color-accent, #C75B2B);
   font-weight: 600;
 }
 
@@ -207,9 +208,9 @@
   margin-top: var(--spacing-md);
   padding: var(--spacing-sm) var(--spacing-md);
   font-size: 0.8rem;
-  color: var(--color-error);
-  background: rgba(239, 68, 68, 0.08);
-  border: 1px solid rgba(239, 68, 68, 0.2);
+  color: var(--color-error, #C43E3E);
+  background: rgba(196, 62, 62, 0.08);
+  border: 1px solid rgba(196, 62, 62, 0.2);
   border-radius: var(--radius-md);
 }
 
@@ -217,16 +218,15 @@
 .srf--success {
   width: 100%;
   padding: var(--spacing-2xl) var(--spacing-xl);
-  background: rgba(17, 24, 39, 0.85);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-xl);
+  background: var(--color-bg-card, #FFFFFF);
+  border: 1px solid var(--color-border, #E5E2DB);
+  border-radius: var(--radius-xl, 16px);
   text-align: center;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.06);
 }
 
 .srf__success-icon {
-  color: var(--color-success);
+  color: var(--color-success, #2D7A4F);
   margin: 0 auto var(--spacing-md);
   display: block;
 }
@@ -234,13 +234,13 @@
 .srf__success-text {
   font-size: 1rem;
   font-weight: 600;
-  color: var(--color-text-primary);
+  color: var(--color-text-primary, #1A1A1A);
   margin-bottom: var(--spacing-sm);
 }
 
 .srf__success-subtext {
   font-size: 0.82rem;
-  color: var(--color-text-muted);
+  color: var(--color-text-secondary, #555555);
   margin-bottom: var(--spacing-xl);
 }
 
@@ -248,22 +248,20 @@
   padding: 0.55rem 1.25rem;
   font-size: 0.85rem;
   font-weight: 500;
-  color: var(--color-accent);
+  color: var(--color-accent, #C75B2B);
   background: transparent;
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--color-border, #E5E2DB);
   border-radius: var(--radius-full);
   cursor: pointer;
-  transition: border-color var(--transition-fast), background var(--transition-fast);
+  transition: border-color 200ms ease, background 200ms ease;
 }
 
 .srf__reset-btn:hover {
-  border-color: var(--color-accent);
-  background: var(--color-accent-glow);
+  border-color: var(--color-accent, #C75B2B);
+  background: var(--color-accent-light, #F7E8DE);
 }
 
-/* ============================================
-   Responsive — on mobile becomes full width
-   ============================================ */
+/* Responsive */
 @media (max-width: 768px) {
   .srf {
     padding: var(--spacing-lg);

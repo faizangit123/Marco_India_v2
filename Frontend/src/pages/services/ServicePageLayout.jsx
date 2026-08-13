@@ -123,44 +123,36 @@ const ServicePageLayout = ({
 
   return (
     <main>
-      {/* ── Hero ── */}
+      {/* ── Hero with Background Image ── */}
       <section className="sp-hero">
-        <div className="sp-hero__bg" />
+        <div 
+          className="sp-hero__bg" 
+          style={image ? { backgroundImage: `linear-gradient(90deg, rgba(15, 15, 15, 0.94) 0%, rgba(15, 15, 15, 0.8) 50%, rgba(15, 15, 15, 0.45) 100%), url(${image})` } : {}}
+        />
         <div className="container sp-hero__inner">
-          {Icon && <div className="sp-hero__icon"><Icon size={36} /></div>}
-          <h1 className="sp-hero__title">{title}</h1>
-          <p className="sp-hero__subtitle">{subtitle}</p>
-          <div className="sp-hero__actions">
-            <button className="sp-hero__cta" onClick={scrollToForm}>Get a Free Quote</button>
-            <Link to="/contact" className="sp-hero__cta sp-hero__cta--outline">
-              <Phone size={16} /> Contact Us
-            </Link>
+          <div className="sp-hero__content-box">
+            <div className="sp-hero__badge">
+              {Icon && <Icon size={16} className="sp-hero__badge-icon" />}
+              <span>Service Details</span>
+            </div>
+            <h1 className="sp-hero__title">{title}</h1>
+            <p className="sp-hero__subtitle">{subtitle}</p>
+            <div className="sp-hero__actions">
+              <button className="sp-hero__cta" onClick={scrollToForm}>Get a Free Quote</button>
+              <Link to="/contact" className="sp-hero__cta sp-hero__cta--outline">
+                <Phone size={16} /> Contact Us
+              </Link>
+            </div>
+            <nav className="sp-hero__breadcrumb">
+              <Link to="/">Home</Link>
+              <ChevronRight size={14} />
+              <Link to="/services">Services</Link>
+              <ChevronRight size={14} />
+              <span>{title}</span>
+            </nav>
           </div>
-          <nav className="sp-hero__breadcrumb">
-            <Link to="/">Home</Link>
-            <ChevronRight size={14} />
-            <Link to="/services">Services</Link>
-            <ChevronRight size={14} />
-            <span>{title}</span>
-          </nav>
         </div>
       </section>
-
-      {/* ── Hero Image ── */}
-      {image && (
-        <section className="sp-image-section">
-          <div className="container">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
-              className="sp-image-wrapper"
-            >
-              <img src={image} alt={imageAlt} className="sp-image" />
-            </motion.div>
-          </div>
-        </section>
-      )}
 
       {/* ── Stats Bar ── */}
       {stats.length > 0 && (
