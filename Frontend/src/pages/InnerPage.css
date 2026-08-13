@@ -21,6 +21,7 @@
   font-weight: 800;
   margin: 0 0 var(--spacing-sm) 0;
   line-height: 1.2;
+  color: var(--color-text-on-dark, #F5F1EA);
 }
 
 .page-hero__title span {
@@ -128,11 +129,12 @@
   font-size: 1.1rem;
   font-weight: 600;
   margin-bottom: var(--spacing-sm);
+  color: var(--color-text-on-dark, #F5F1EA);
 }
 
 .info-card__text {
   font-size: 0.9rem;
-  color: var(--color-text-secondary);
+  color: var(--color-text-on-dark-secondary, #C8C4BE);
   line-height: 1.6;
 }
 
@@ -240,6 +242,7 @@
 
 .policy-contact p {
   margin-bottom: var(--spacing-sm);
+  color: var(--color-text-on-dark-secondary, #C8C4BE);
 }
 
 .policy-contact a {
@@ -275,7 +278,7 @@
   font-family: var(--font-display);
   font-size: 1.1rem;
   font-weight: 600;
-  color: var(--color-text-primary);
+  color: var(--color-text-on-dark, #F5F1EA);
   margin-bottom: var(--spacing-lg);
   padding-bottom: var(--spacing-sm);
   border-bottom: 2px solid var(--color-accent);
@@ -292,7 +295,7 @@
   align-items: center;
   gap: var(--spacing-sm);
   padding: var(--spacing-xs) 0;
-  color: var(--color-text-secondary);
+  color: var(--color-text-on-dark-secondary, #C8C4BE);
   text-decoration: none;
   font-size: 0.9rem;
   transition: color var(--transition-fast), transform var(--transition-fast);

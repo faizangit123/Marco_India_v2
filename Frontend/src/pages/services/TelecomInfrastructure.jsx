@@ -6,7 +6,9 @@ const TelecomInfrastructure = () => (
     slug="telecom-infrastructure"
     title="Telecom Infrastructure"
     icon={Radio}
-    subtitle="End-to-end telecom infrastructure solutions — from tower installation and equipment mounting to commissioning and maintenance. We partner with leading telecom operators across India."
+    subtitle="Turnkey telecom infrastructure solutions including cellular towers, monopoles, IBS (In-Building Solutions), and network hardware installation for seamless connectivity."
+    image="https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=1200&q=80"
+    imageAlt="Telecom tower against sky"
     description={
       <>
         <p>Marco India has extensive experience in building and maintaining telecom infrastructure for India's largest operators. Our services cover the full project lifecycle — site acquisition support, foundation work, tower erection, equipment installation, power systems, and commissioning.</p>

@@ -52,6 +52,7 @@
   font-size: 1.05rem;
   font-weight: 600;
   margin-bottom: var(--spacing-xs);
+  color: var(--color-text-on-dark, #F5F1EA);
 }
 
 .careers-page__position-meta {
@@ -59,7 +60,7 @@
   flex-wrap: wrap;
   gap: var(--spacing-md);
   font-size: 0.8rem;
-  color: var(--color-text-muted);
+  color: var(--color-text-on-dark-muted, #9B9892);
 }
 
 .careers-page__position-meta span {
@@ -69,7 +70,7 @@
 }
 
 .careers-page__position-arrow {
-  color: var(--color-text-muted);
+  color: var(--color-accent);
   transition: transform var(--transition-fast);
   flex-shrink: 0;
 }
@@ -108,7 +109,7 @@
   align-items: flex-start;
   gap: var(--spacing-sm);
   font-size: 0.85rem;
-  color: var(--color-text-secondary);
+  color: var(--color-text-on-dark-secondary, #C8C4BE);
   line-height: 1.5;
 }
 

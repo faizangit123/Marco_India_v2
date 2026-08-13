@@ -7,6 +7,8 @@ const CCTVInstallation = () => (
     title="CCTV Installation"
     icon={Camera}
     subtitle="Professional CCTV surveillance solutions for residential, commercial, and industrial properties across India. We design, install, and maintain end-to-end security camera systems tailored to your needs."
+    image="https://images.unsplash.com/photo-1557597774-9d273605dfa9?w=1200&q=80"
+    imageAlt="CCTV security cameras installed on building"
     description={
       <>
         <p>Marco India provides comprehensive CCTV installation services using the latest IP camera technology, high-definition recording systems, and remote monitoring capabilities. Our team of certified technicians ensures optimal camera placement, proper cabling, and seamless integration with your existing security infrastructure.</p>

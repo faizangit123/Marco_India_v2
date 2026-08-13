@@ -50,11 +50,12 @@
   font-size: 1.35rem;
   font-weight: 700;
   margin-bottom: var(--spacing-sm);
+  color: var(--color-text-on-dark, #F5F1EA);
 }
 
 .services-page__item-desc {
   font-size: 0.9rem;
-  color: var(--color-text-secondary);
+  color: var(--color-text-on-dark-secondary, #C8C4BE);
   line-height: 1.7;
   margin-bottom: var(--spacing-md);
 }
@@ -65,7 +66,7 @@
 
 .services-page__item-apps strong {
   font-size: 0.8rem;
-  color: var(--color-text-muted);
+  color: var(--color-text-on-dark-muted, #9B9892);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   display: block;
@@ -84,7 +85,7 @@
   background: rgba(0, 212, 255, 0.08);
   border: 1px solid rgba(0, 212, 255, 0.15);
   border-radius: var(--radius-full);
-  color: var(--color-text-secondary);
+  color: var(--color-text-on-dark-secondary, #C8C4BE);
 }
 
 .services-page__item-cta {
@@ -130,7 +131,7 @@
   align-items: center;
   gap: var(--spacing-sm);
   font-size: 0.85rem;
-  color: var(--color-text-secondary);
+  color: var(--color-text-on-dark-secondary, #C8C4BE);
 }
 
 .services-page__item-features li svg {
@@ -162,7 +163,7 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  opacity: 0.3;
+  opacity: 0.6;
   position: absolute;
   top: var(--spacing-sm);
   right: var(--spacing-md);
@@ -185,11 +186,12 @@
   font-size: 1rem;
   font-weight: 600;
   margin-bottom: var(--spacing-xs);
+  color: var(--color-text-on-dark, #F5F1EA);
 }
 
 .services-page__step p {
   font-size: 0.85rem;
-  color: var(--color-text-secondary);
+  color: var(--color-text-on-dark-secondary, #C8C4BE);
   line-height: 1.5;
 }
 

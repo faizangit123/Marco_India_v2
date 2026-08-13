@@ -59,7 +59,7 @@
   max-width: 640px;
   margin: 0 auto var(--spacing-xl);
   font-size: 1.05rem;
-  color: var(--color-text-secondary);
+  color: var(--color-text-on-dark-secondary, #C8C4BE);
   line-height: 1.7;
 }
 
@@ -94,8 +94,8 @@
 
 .sp-hero__cta--outline {
   background: transparent;
-  color: var(--color-text-primary);
-  border: 1px solid var(--color-border);
+  color: var(--color-text-on-dark, #F5F1EA);
+  border: 1px solid rgba(255,255,255,0.2);
 }
 
 .sp-hero__cta--outline:hover {
@@ -110,7 +110,7 @@
   justify-content: center;
   gap: var(--spacing-xs);
   font-size: 0.82rem;
-  color: var(--color-text-muted);
+  color: var(--color-text-on-dark-muted, #9B9892);
 }
 
 .sp-hero__breadcrumb a:hover {
@@ -119,9 +119,9 @@
 
 /* ── Stats Bar ── */
 .sp-stats {
-  background: var(--color-bg-secondary);
-  border-top: 1px solid var(--color-border);
-  border-bottom: 1px solid var(--color-border);
+  background: var(--color-bg-dark);
+  border-top: 1px solid rgba(255,255,255,0.1);
+  border-bottom: 1px solid rgba(255,255,255,0.1);
   padding: var(--spacing-xl) 0;
 }
 
@@ -150,9 +150,28 @@
 
 .sp-stat__label {
   font-size: 0.82rem;
-  color: var(--color-text-muted);
+  color: var(--color-text-on-dark-secondary, #C8C4BE);
   text-transform: uppercase;
   letter-spacing: 0.05em;
+}
+
+/* ── Hero Image ── */
+.sp-image-section {
+  background: var(--color-bg-dark);
+  padding: var(--spacing-2xl) 0;
+}
+.sp-image-wrapper {
+  width: 100%;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  border: 1px solid rgba(255,255,255,0.1);
+}
+.sp-image {
+  width: 100%;
+  max-height: 450px;
+  object-fit: cover;
+  display: block;
 }
 
 /* ── Grid Layout ── */

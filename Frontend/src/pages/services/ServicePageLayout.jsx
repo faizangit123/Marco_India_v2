@@ -4,6 +4,7 @@ import {
   ChevronRight, ChevronDown, Loader, Clock, CheckCircle,
   Camera, Signal, Radio, Cable, Network, Wrench, ArrowRight, Phone,
 } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { useAuth } from '../../contexts/AuthContext';
 import apiClient from '../../api/client';
 import ServiceRequestForm from '../../components/ServiceRequestForm/ServiceRequestForm';
@@ -93,7 +94,7 @@ const FAQItem = ({ question, answer }) => {
 
 const ServicePageLayout = ({
   slug, title, subtitle, description, features, applications, icon: Icon,
-  stats = [], process = [], faqs = [],
+  stats = [], process = [], faqs = [], image, imageAlt,
 }) => {
   const { isAuthenticated } = useAuth();
   const [requests, setRequests] = useState([]);
@@ -144,6 +145,22 @@ const ServicePageLayout = ({
           </nav>
         </div>
       </section>
+
+      {/* ── Hero Image ── */}
+      {image && (
+        <section className="sp-image-section">
+          <div className="container">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+              className="sp-image-wrapper"
+            >
+              <img src={image} alt={imageAlt} className="sp-image" />
+            </motion.div>
+          </div>
+        </section>
+      )}
 
       {/* ── Stats Bar ── */}
       {stats.length > 0 && (

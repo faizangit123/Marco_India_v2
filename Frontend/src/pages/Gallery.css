@@ -70,7 +70,7 @@
   gap: var(--spacing-xs);
   opacity: 0;
   transition: opacity var(--transition-base);
-  color: var(--color-text-primary);
+  color: var(--color-text-on-dark, #F5F1EA);
 }
 
 .gallery-page__item:hover .gallery-page__item-overlay {
@@ -85,7 +85,7 @@
 
 .gallery-page__item-location {
   font-size: 0.8rem;
-  color: var(--color-text-secondary);
+  color: var(--color-text-on-dark-secondary, #C8C4BE);
 }
 
 /* Lightbox */

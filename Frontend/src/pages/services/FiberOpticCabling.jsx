@@ -7,6 +7,8 @@ const FiberOpticCabling = () => (
     title="Fiber Optic Cabling"
     icon={Cable}
     subtitle="High-speed fiber optic network deployment for enterprises, ISPs, and telecom operators. We handle everything from route planning and trenching to splicing, testing, and commissioning."
+    image="https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=1200&q=80"
+    imageAlt="Fiber optic cables with light transmission"
     description={
       <>
         <p>Fiber optic networks are the backbone of modern digital infrastructure. Marco India provides comprehensive fiber optic cabling services including FTTH (Fiber to the Home), FTTB (Fiber to the Building), and long-haul backbone network deployment.</p>

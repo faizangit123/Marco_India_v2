@@ -6,7 +6,9 @@ const AMCMaintenance = () => (
     slug="amc-maintenance"
     title="AMC & Maintenance"
     icon={Wrench}
-    subtitle="Comprehensive Annual Maintenance Contracts and on-demand maintenance services for all your telecom, CCTV, and networking infrastructure. Keep your systems running at peak performance."
+    subtitle="Comprehensive IT and telecom maintenance services to keep your business running without interruptions. We offer SLA-backed AMC plans for networks, surveillance systems, and infrastructure."
+    image="https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=1200&q=80"
+    imageAlt="IT technician performing server maintenance"
     description={
       <>
         <p>Technology infrastructure requires regular upkeep to ensure reliability, security, and optimal performance. Marco India offers flexible AMC plans covering preventive maintenance, emergency repairs, equipment replacement, and system upgrades for CCTV, networking, telecom, and fiber optic installations.</p>

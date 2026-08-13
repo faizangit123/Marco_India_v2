@@ -6,7 +6,9 @@ const NetworkSetup = () => (
     slug="network-setup"
     title="Network Setup"
     icon={Network}
-    subtitle="Enterprise-grade structured cabling, LAN/WAN design, and network infrastructure setup. We build reliable, scalable networks that power your business operations."
+    subtitle="Comprehensive networking solutions for businesses of all sizes. From initial design to hardware installation and configuration, we build robust, scalable, and secure networks."
+    image="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=1200&q=80"
+    imageAlt="Data center with network server racks"
     description={
       <>
         <p>A well-designed network is essential for business productivity. Marco India delivers end-to-end network infrastructure solutions — from structured cabling (Cat5e, Cat6, Cat6A) and rack installations to switch configuration, Wi-Fi deployment, and network security setup.</p>

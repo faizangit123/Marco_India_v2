@@ -7,6 +7,8 @@ const SignalBoosting = () => (
     title="Signal Boosting"
     icon={Signal}
     subtitle="Eliminate dead zones and ensure strong cellular connectivity throughout your building. Our in-building signal boosting solutions cover all major Indian telecom operators and frequency bands."
+    image="https://images.unsplash.com/photo-1516044734145-07ca8eef8731?w=1200&q=80"
+    imageAlt="Communication tower with signal equipment"
     description={
       <>
         <p>Poor indoor cellular coverage is a common challenge in modern buildings with reinforced concrete, metal structures, and energy-efficient glass. Marco India deploys professional-grade signal boosting systems — including Distributed Antenna Systems (DAS) and multi-band repeaters — that amplify signals from all major carriers including Jio, Airtel, Vi, and BSNL.</p>

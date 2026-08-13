@@ -30,7 +30,7 @@
   gap: 0.375rem;
   background: none;
   border: none;
-  color: var(--color-text-secondary);
+  color: var(--color-text-on-dark-secondary, #C8C4BE);
   font-size: 0.875rem;
   cursor: pointer;
   padding: 0;
@@ -39,7 +39,7 @@
 }
 
 .auth-card__back:hover {
-  color: var(--color-text-primary);
+  color: var(--color-text-on-dark, #F5F1EA);
 }
 
 .auth-card--success {
@@ -73,11 +73,12 @@
   font-size: 1.5rem;
   font-weight: 700;
   margin-bottom: var(--spacing-xs);
+  color: var(--color-text-on-dark, #F5F1EA);
 }
 
 .auth-card__subtitle {
   font-size: 0.9rem;
-  color: var(--color-text-secondary);
+  color: var(--color-text-on-dark-secondary, #C8C4BE);
 }
 
 /* ---- Form ---- */
@@ -96,7 +97,7 @@
 .auth-form__label {
   font-size: 0.8rem;
   font-weight: 500;
-  color: var(--color-text-secondary);
+  color: var(--color-text-on-dark-secondary, #C8C4BE);
 }
 
 .auth-form__input {
@@ -112,7 +113,7 @@
 }
 
 .auth-form__input::placeholder {
-  color: var(--color-text-muted);
+  color: var(--color-text-muted, #999999);
 }
 
 .auth-form__input:focus {
@@ -197,7 +198,7 @@
 .auth-card__footer {
   text-align: center;
   font-size: 0.85rem;
-  color: var(--color-text-secondary);
+  color: var(--color-text-on-dark-secondary, #C8C4BE);
   margin-top: var(--spacing-lg);
 }
 
@@ -253,12 +254,12 @@
 .auth-success__title {
   font-size: 1.25rem;
   font-weight: 700;
-  color: var(--color-text-primary);
+  color: var(--color-text-on-dark, #F5F1EA);
   margin-bottom: var(--spacing-sm);
 }
 .auth-success__text {
   font-size: 0.9rem;
-  color: var(--color-text-secondary);
+  color: var(--color-text-on-dark-secondary, #C8C4BE);
   line-height: 1.6;
   margin-bottom: var(--spacing-lg);
 }

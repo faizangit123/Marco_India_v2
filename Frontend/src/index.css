@@ -36,6 +36,11 @@
   --color-text-accent: #C75B2B;
   --color-text-light: #FAFAF7;        /* for dark backgrounds */
 
+  /* Text for dark backgrounds */
+  --color-text-on-dark: #F5F1EA;
+  --color-text-on-dark-secondary: #C8C4BE;
+  --color-text-on-dark-muted: #9B9892;
+
   /* Status */
   --color-success: #2D7A4F;
   --color-warning: #D4853A;
