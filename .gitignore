@@ -1,5 +1,5 @@
 # ============================================================
-# Marco India — Full Stack .gitignore
+# Marco India v2 — Full Stack .gitignore
 # ============================================================
 
 # ---------- Environment Variables (NEVER commit) ----------
@@ -7,29 +7,22 @@
 .env.*
 !.env.example
 
-# ---------- Python / Django ----------
-__pycache__/
-*.py[cod]
-*.pyo
-*.pyd
-*.so
-*.egg
-*.egg-info/
-dist/
-build/
-.eggs/
-venv/
-env/
-.venv/
-pip-log.txt
-pip-delete-this-directory.txt
-db.sqlite3
-*.sqlite3
-debug.log
-media/
-staticfiles/
+# ---------- Node / Backend ----------
+backend/node_modules/
+backend/uploads/
+backend/.env
+backend/.env.*
+!backend/.env.example
+backend/prisma/*.db
 
-# ---------- Node / React ----------
+# ---------- Node / Frontend ----------
+Frontend/node_modules/
+Frontend/dist/
+Frontend/.env
+Frontend/.env.*
+!Frontend/.env.example
+
+# ---------- General Node ----------
 node_modules/
 dist/
 dist-ssr/
@@ -61,18 +54,3 @@ desktop.ini
 
 # ---------- Docker ----------
 *.env.docker
-
-# ---------- Backend specific ----------
-backend/venv/
-backend/.env
-backend/db.sqlite3
-backend/debug.log
-backend/media/
-backend/staticfiles/
-
-# ---------- Frontend specific ----------
-Frontend/node_modules/
-Frontend/dist/
-Frontend/.env
-Frontend/.env.*
-!Frontend/.env.example
