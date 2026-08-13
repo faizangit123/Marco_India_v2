@@ -128,7 +128,7 @@ const Navbar = () => {
         </ul>
 
         <div className="navbar__actions">
-          <a href="tel:+918092099110" className="navbar__phone" aria-label="Call us">
+          <a href="tel:+919315501070" className="navbar__phone" aria-label="Call us">
             <Phone size={18} />
             <span className="navbar__phone-text">Call Us</span>
           </a>
@@ -232,7 +232,7 @@ const Navbar = () => {
               <Link to="/signup" className="navbar__mobile-link">Sign Up</Link>
             </>
           )}
-          <a href="tel:+918092099110" className="navbar__mobile-phone">
+          <a href="tel:+919315501070" className="navbar__mobile-phone">
             <Phone size={18} /> Call Us
           </a>
           <Link to="/contact" className="navbar__mobile-cta">Get a Quote</Link>

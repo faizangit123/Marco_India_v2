@@ -276,8 +276,8 @@ const ServicePageLayout = ({
                 </div>
                 <div className="sp-cta-banner__actions">
                   <button className="sp-hero__cta" onClick={scrollToForm}>Request a Quote</button>
-                  <a href="tel:+919876543210" className="sp-cta-banner__phone">
-                    <Phone size={16} /> +91 98765 43210
+                  <a href="tel:+919315501070" className="sp-cta-banner__phone">
+                    <Phone size={16} /> +91 9315501070
                   </a>
                 </div>
               </div>
