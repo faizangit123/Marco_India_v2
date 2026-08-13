@@ -1,0 +1,201 @@
+/* ============================================
+   About / Stats Section
+   ============================================ */
+
+.about {
+  background: var(--color-bg-primary);
+  position: relative;
+}
+
+/* ---- Header ---- */
+.about__header {
+  text-align: center;
+  max-width: 640px;
+  margin: 0 auto var(--spacing-3xl);
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.about__header--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.about__badge {
+  display: inline-block;
+  padding: 0.3rem 0.9rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+  background: var(--color-accent-glow);
+  border: 1px solid rgba(0, 212, 255, 0.2);
+  border-radius: var(--radius-full);
+  margin-bottom: var(--spacing-lg);
+}
+
+.about__title {
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-weight: 800;
+  margin-bottom: var(--spacing-md);
+  letter-spacing: -0.02em;
+}
+
+.about__title-accent {
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.about__subtitle {
+  font-size: clamp(0.95rem, 1.8vw, 1.05rem);
+  color: var(--color-text-secondary);
+  line-height: 1.7;
+}
+
+/* ---- Pillars (Mission / Approach / Vision) ---- */
+.about__pillars {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-xl);
+  margin-bottom: var(--spacing-3xl);
+}
+
+.about__pillar {
+  background: var(--gradient-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-2xl);
+  text-align: center;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease, transform 0.6s ease, border-color var(--transition-base);
+}
+
+.about__pillar--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.about__pillar:hover {
+  border-color: var(--color-border-hover);
+}
+
+.about__pillar-icon {
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  background: var(--color-accent-glow);
+  color: var(--color-accent);
+  margin: 0 auto var(--spacing-lg);
+}
+
+.about__pillar-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: var(--spacing-sm);
+}
+
+.about__pillar-text {
+  font-size: 0.88rem;
+  color: var(--color-text-secondary);
+  line-height: 1.65;
+}
+
+/* ---- Stats Bar ---- */
+.about__stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--spacing-lg);
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-2xl) var(--spacing-xl);
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease 0.3s, transform 0.6s ease 0.3s;
+}
+
+.about__stats--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ---- Individual Stat ---- */
+.about-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xs);
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.about-stat--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.about-stat__icon {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  background: var(--color-accent-glow);
+  color: var(--color-accent);
+  margin-bottom: var(--spacing-xs);
+}
+
+.about-stat__value {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--color-accent);
+  line-height: 1;
+}
+
+.about-stat__label {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+/* ============================================
+   Responsive
+   ============================================ */
+@media (max-width: 768px) {
+  .about__pillars {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+  }
+
+  .about__pillar {
+    padding: var(--spacing-xl);
+  }
+
+  .about__stats {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-xl);
+  }
+}
+
+@media (max-width: 480px) {
+  .about__stats {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-lg);
+    padding: var(--spacing-xl);
+  }
+
+  .about-stat__value {
+    font-size: 1.5rem;
+  }
+}

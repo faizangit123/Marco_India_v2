@@ -1,0 +1,271 @@
+/* ============================================
+   Service Request Form — Sidebar Widget
+   ============================================ */
+
+.srf {
+  width: 100%;
+  padding: var(--spacing-xl);
+  background: rgba(17, 24, 39, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+/* ---- Heading ---- */
+.srf__heading {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: 0.4rem;
+  text-align: center;
+  letter-spacing: -0.01em;
+}
+
+.srf__subheading {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  text-align: center;
+  margin-bottom: var(--spacing-xl);
+}
+
+/* ---- Field Grid — always vertical in sidebar ---- */
+.srf__fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.srf__field {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---- Label ---- */
+.srf__label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  margin-bottom: 0.35rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+/* ---- Inputs ---- */
+.srf__input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 0.9rem;
+  font-family: var(--font-body);
+  color: var(--color-text-primary);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  outline: none;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast);
+}
+
+.srf__input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.srf__input:focus {
+  border-color: var(--color-accent);
+  background: rgba(0, 212, 255, 0.04);
+  box-shadow: 0 0 0 3px var(--color-accent-glow);
+}
+
+.srf__input--error {
+  border-color: var(--color-error);
+}
+
+.srf__input--error:focus {
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
+}
+
+/* ---- Select ---- */
+.srf__select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.9rem center;
+  background-color: rgba(255, 255, 255, 0.04);
+  padding-right: 2.5rem;
+  cursor: pointer;
+}
+
+.srf__select--placeholder {
+  color: var(--color-text-muted);
+}
+
+.srf__select option {
+  background: var(--color-bg-secondary);
+  color: var(--color-text-primary);
+}
+
+/* ---- Error Text ---- */
+.srf__error {
+  font-size: 0.74rem;
+  color: var(--color-error);
+  margin-top: 5px;
+  padding-left: 2px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* ---- Submit Button ---- */
+.srf__submit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  width: 100%;
+  padding: 0.85rem 1.5rem;
+  margin-top: var(--spacing-sm);
+  font-size: 0.95rem;
+  font-weight: 700;
+  font-family: var(--font-body);
+  color: #fff;
+  background: var(--gradient-primary);
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: opacity var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
+  letter-spacing: 0.02em;
+}
+
+.srf__submit:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-accent);
+}
+
+.srf__submit:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.srf__submit:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.srf__submit:active{
+  scale: 0.95;
+}
+
+/* ---- Divider ---- */
+.srf__divider {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin: var(--spacing-md) 0 0;
+}
+
+.srf__divider::before,
+.srf__divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--color-border);
+}
+
+.srf__divider span {
+  font-size: 0.72rem;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+/* ---- Contact hint ---- */
+.srf__hint {
+  text-align: center;
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+  margin-top: var(--spacing-md);
+}
+
+.srf__hint a {
+  color: var(--color-accent);
+  font-weight: 600;
+}
+
+/* ---- Spinner ---- */
+.srf__spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ---- Server Error ---- */
+.srf__server-error {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-md);
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: 0.8rem;
+  color: var(--color-error);
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: var(--radius-md);
+}
+
+/* ---- Success State ---- */
+.srf--success {
+  width: 100%;
+  padding: var(--spacing-2xl) var(--spacing-xl);
+  background: rgba(17, 24, 39, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  text-align: center;
+}
+
+.srf__success-icon {
+  color: var(--color-success);
+  margin: 0 auto var(--spacing-md);
+  display: block;
+}
+
+.srf__success-text {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-sm);
+}
+
+.srf__success-subtext {
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+  margin-bottom: var(--spacing-xl);
+}
+
+.srf__reset-btn {
+  padding: 0.55rem 1.25rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--color-accent);
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: border-color var(--transition-fast), background var(--transition-fast);
+}
+
+.srf__reset-btn:hover {
+  border-color: var(--color-accent);
+  background: var(--color-accent-glow);
+}
+
+/* ============================================
+   Responsive — on mobile becomes full width
+   ============================================ */
+@media (max-width: 768px) {
+  .srf {
+    padding: var(--spacing-lg);
+  }
+}

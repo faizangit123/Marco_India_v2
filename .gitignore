@@ -1,0 +1,78 @@
+# ============================================================
+# Marco India — Full Stack .gitignore
+# ============================================================
+
+# ---------- Environment Variables (NEVER commit) ----------
+.env
+.env.*
+!.env.example
+
+# ---------- Python / Django ----------
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+venv/
+env/
+.venv/
+pip-log.txt
+pip-delete-this-directory.txt
+db.sqlite3
+*.sqlite3
+debug.log
+media/
+staticfiles/
+
+# ---------- Node / React ----------
+node_modules/
+dist/
+dist-ssr/
+*.local
+
+# ---------- Logs ----------
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ---------- Editor ----------
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.swp
+
+# ---------- OS ----------
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ---------- Docker ----------
+*.env.docker
+
+# ---------- Backend specific ----------
+backend/venv/
+backend/.env
+backend/db.sqlite3
+backend/debug.log
+backend/media/
+backend/staticfiles/
+
+# ---------- Frontend specific ----------
+Frontend/node_modules/
+Frontend/dist/
+Frontend/.env
+Frontend/.env.*
+!Frontend/.env.example
