@@ -6,8 +6,8 @@
   height: 44px;
   border-radius: 50%;
   border: none;
-  background: hsl(var(--primary));
-  color: hsl(var(--primary-foreground));
+  background: var(--color-accent, #C75B2B);
+  color: #FFFFFF;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -15,9 +15,9 @@
   opacity: 0;
   visibility: hidden;
   transform: translateY(10px);
-  transition: opacity 0.3s, visibility 0.3s, transform 0.3s, background 0.3s;
-  z-index: 50;
-  box-shadow: 0 4px 12px hsl(var(--primary) / 0.3);
+  transition: opacity 0.3s, visibility 0.3s, transform 0.3s, background 0.3s, box-shadow 0.3s;
+  z-index: 500;
+  box-shadow: 0 4px 16px rgba(199, 91, 43, 0.3);
 }
 
 .scroll-to-top--visible {
@@ -27,5 +27,7 @@
 }
 
 .scroll-to-top:hover {
-  background: hsl(var(--primary) / 0.85);
+  background: var(--color-accent-hover, #B04E24);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(199, 91, 43, 0.4);
 }

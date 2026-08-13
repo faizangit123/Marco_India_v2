@@ -69,7 +69,7 @@ const CropModal = ({ imageSrc, onCancel, onCrop }) => {
     // Circle border
     ctx.beginPath();
     ctx.arc(SIZE / 2, SIZE / 2, SIZE / 2 - 1, 0, Math.PI * 2);
-    ctx.strokeStyle = 'rgba(0,212,255,0.8)';
+    ctx.strokeStyle = 'rgba(199,91,43,0.8)';
     ctx.lineWidth = 2;
     ctx.stroke();
   }, [zoom, offset]);

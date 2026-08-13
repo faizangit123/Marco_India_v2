@@ -14,7 +14,7 @@ const Settings = () => {
     maintenanceMode: false,
     allowRegistration: true,
     requireEmailVerification: false,
-    primaryColor: '#00d4ff',
+    primaryColor: '#C75B2B',
     accentColor: '#6366f1',
   });
 

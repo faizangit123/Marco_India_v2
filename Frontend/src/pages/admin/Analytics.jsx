@@ -4,7 +4,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import apiClient from '../../api/client';
 import './AdminLayout.css';
 
-const SERVICE_COLORS = ['#00d4ff', '#6366f1', '#22c55e', '#f59e0b', '#ec4899', '#ef4444'];
+const SERVICE_COLORS = ['#C75B2B', '#D4845A', '#22c55e', '#f59e0b', '#ec4899', '#ef4444'];
 
 const exportToCSV = (data, filename, headers) => {
   const csvRows = [headers.join(',')];
@@ -151,7 +151,7 @@ const Analytics = () => {
                 <XAxis dataKey="month" stroke="hsl(var(--muted-foreground))" fontSize={12} />
                 <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} />
                 <Tooltip contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '8px', color: 'hsl(var(--foreground))' }} />
-                <Bar dataKey="inquiries" fill="#00d4ff" name="Inquiries" radius={[4,4,0,0]} />
+                <Bar dataKey="inquiries" fill="#C75B2B" name="Inquiries" radius={[4,4,0,0]} />
                 <Bar dataKey="contacts" fill="#6366f1" name="Contacts" radius={[4,4,0,0]} />
                 <Bar dataKey="users" fill="#22c55e" name="New Users" radius={[4,4,0,0]} />
               </BarChart>

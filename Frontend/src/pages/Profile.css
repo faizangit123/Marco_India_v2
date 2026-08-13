@@ -317,7 +317,7 @@
 
 .crop-modal__canvas {
   border-radius: 50%;
-  box-shadow: 0 0 0 4px rgba(0, 212, 255, 0.15);
+  box-shadow: 0 0 0 4px rgba(199, 91, 43, 0.15);
   touch-action: none;
   user-select: none;
 }

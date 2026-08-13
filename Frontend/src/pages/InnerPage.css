@@ -69,7 +69,7 @@
   color: var(--color-accent);
   padding: 0.35rem 1rem;
   background: var(--color-accent-glow);
-  border: 1px solid rgba(0, 212, 255, 0.2);
+  border: 1px solid rgba(199, 91, 43, 0.3);
   border-radius: var(--radius-full);
   margin-bottom: var(--spacing-md);
 }

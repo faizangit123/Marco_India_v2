@@ -154,7 +154,7 @@
   margin: 0 auto var(--spacing-md);
   border-radius: 50%;
   background: var(--color-accent-glow);
-  border: 2px solid rgba(0, 212, 255, 0.2);
+  border: 2px solid rgba(199, 91, 43, 0.3);
   display: flex;
   align-items: center;
   justify-content: center;

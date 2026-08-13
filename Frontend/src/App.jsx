@@ -40,6 +40,8 @@ import Analytics from "./pages/admin/Analytics";
 import Settings from "./pages/admin/Settings";
 import Notifications from "./pages/admin/Notifications";
 
+import ScrollToTop from "./components/ScrollToTop/ScrollToTop";
+
 const App = () => (
   <BrowserRouter>
     <AuthProvider>
@@ -90,6 +92,7 @@ const App = () => (
       </Routes>
       <CTABanner />
       <Footer />
+      <ScrollToTop />
     </AuthProvider>
   </BrowserRouter>
 );
