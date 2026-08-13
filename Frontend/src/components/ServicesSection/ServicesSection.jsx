@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { motion } from 'framer-motion';
 import { Camera, Signal, Radio, Server, ArrowRight } from 'lucide-react';
 import './ServicesSection.css';
 
@@ -41,9 +42,12 @@ const ServiceCard = ({ service, index, isVisible }) => {
   const Icon = service.icon;
 
   return (
-    <div
-      className={`service-card ${isVisible ? 'service-card--visible' : ''}`}
-      style={{ transitionDelay: `${index * 120}ms` }}
+    <motion.div
+      className="service-card"
+      variants={{
+        hidden: { opacity: 0, y: 20 },
+        visible: { opacity: 1, y: 0, transition: { duration: 0.5 } }
+      }}
     >
       <div className="service-card__icon-wrap">
         <Icon size={28} />
@@ -61,7 +65,7 @@ const ServiceCard = ({ service, index, isVisible }) => {
       <a href={`/services/${service.slug}`} className="service-card__link">
         Learn More <ArrowRight size={16} />
       </a>
-    </div>
+    </motion.div>
   );
 };
 
@@ -87,7 +91,13 @@ const ServicesSection = () => {
   return (
     <section className="services section" ref={sectionRef} id="services">
       <div className="container">
-        <div className={`services__header ${isVisible ? 'services__header--visible' : ''}`}>
+        <motion.div 
+          className="services__header"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-50px' }}
+          transition={{ duration: 0.6, ease: 'easeOut' }}
+        >
           <span className="services__badge">What We Do</span>
           <h2 className="services__title">
             Comprehensive <span className="services__title-accent">Solutions</span>
@@ -96,13 +106,22 @@ const ServicesSection = () => {
             From surveillance systems to telecom networks — we deliver reliable infrastructure
             tailored to your needs.
           </p>
-        </div>
+        </motion.div>
 
-        <div className="services__grid">
+        <motion.div 
+          className="services__grid"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: '-50px' }}
+          variants={{
+            hidden: {},
+            visible: { transition: { staggerChildren: 0.1 } }
+          }}
+        >
           {SERVICES.map((service, i) => (
             <ServiceCard key={service.title} service={service} index={i} isVisible={isVisible} />
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );

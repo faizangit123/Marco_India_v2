@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import {
   MapPin, Phone, Mail, Clock,
   Facebook, Instagram, Linkedin, Twitter, Youtube,
@@ -13,9 +14,24 @@ const Footer = () => {
 
   return (
     <footer className="footer">
-      <div className="footer__top container">
+      <motion.div 
+        className="footer__top container"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+        variants={{
+          hidden: {},
+          visible: { transition: { staggerChildren: 0.1 } }
+        }}
+      >
         {/* Company Info */}
-        <div className="footer__col footer__col--brand">
+        <motion.div 
+          className="footer__col footer__col--brand"
+          variants={{
+            hidden: { opacity: 0, y: 20 },
+            visible: { opacity: 1, y: 0, transition: { duration: 0.5 } }
+          }}
+        >
           <Link to="/" className="footer__logo my-[10px]">
             <span className="footer__logo-mark">M</span>
             <span className="footer__logo-text">Marco India</span>
@@ -42,10 +58,16 @@ const Footer = () => {
               <Youtube size={18} />
             </a>
           </div>
-        </div>
+        </motion.div>
 
         {/* Quick Links */}
-        <div className="footer__col">
+        <motion.div 
+          className="footer__col"
+          variants={{
+            hidden: { opacity: 0, y: 20 },
+            visible: { opacity: 1, y: 0, transition: { duration: 0.5 } }
+          }}
+        >
           <h3 className="footer__heading my-[20px]">Quick Links</h3>
           <ul className="footer__list">
             <li><Link to="/" className="footer__link"><ChevronRight size={14} /> Home</Link></li>
@@ -55,10 +77,16 @@ const Footer = () => {
             <li><Link to="/careers" className="footer__link"><ChevronRight size={14} /> Careers</Link></li>
             <li><Link to="/contact" className="footer__link"><ChevronRight size={14} /> Contact Us</Link></li>
           </ul>
-        </div>
+        </motion.div>
 
         {/* Our Services */}
-        <div className="footer__col">
+        <motion.div 
+          className="footer__col"
+          variants={{
+            hidden: { opacity: 0, y: 20 },
+            visible: { opacity: 1, y: 0, transition: { duration: 0.5 } }
+          }}
+        >
           <h3 className="footer__heading my-[20px]">Our Services</h3>
           <ul className="footer__list">
             <li><Link to="/services/cctv-installation" className="footer__link"><ChevronRight size={14} /> CCTV Installation</Link></li>
@@ -68,10 +96,16 @@ const Footer = () => {
             <li><Link to="/services/network-setup" className="footer__link"><ChevronRight size={14} /> Network Setup</Link></li>
             <li><Link to="/services/amc-maintenance" className="footer__link"><ChevronRight size={14} /> AMC & Maintenance</Link></li>
           </ul>
-        </div>
+        </motion.div>
 
         {/* Contact Info */}
-        <div className="footer__col">
+        <motion.div 
+          className="footer__col"
+          variants={{
+            hidden: { opacity: 0, y: 20 },
+            visible: { opacity: 1, y: 0, transition: { duration: 0.5 } }
+          }}
+        >
           <h3 className="footer__heading my-[20px]">Contact Us</h3>
           <ul className="footer__contact-list">
             <li className="footer__contact-item">
@@ -103,8 +137,8 @@ const Footer = () => {
               </span>
             </li>
           </ul>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
 
       {/* Bottom bar */}
       <div className="footer__bottom">

@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { motion } from 'framer-motion';
 import { Star, Quote, ChevronLeft, ChevronRight, Loader } from 'lucide-react';
 import apiClient from '../../api/client';
 import './TestimonialsSection.css';
@@ -64,12 +65,18 @@ const TestimonialsSection = () => {
   return (
     <section className="testimonials section" ref={sectionRef} id="testimonials">
       <div className="container">
-        <div className={`testimonials__header ${isVisible ? 'testimonials__header--visible' : ''}`}>
+        <motion.div 
+          className="testimonials__header"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-50px' }}
+          transition={{ duration: 0.6, ease: 'easeOut' }}
+        >
           <span className="testimonials__badge">Testimonials</span>
           <h2 className="testimonials__title">
             What Our <span className="testimonials__title-accent">Clients Say</span>
           </h2>
-        </div>
+        </motion.div>
 
         {loading ? (
           <div className="gallery__loading"><Loader size={24} className="auth-form__spinner" /></div>
@@ -109,12 +116,18 @@ const TestimonialsSection = () => {
           </>
         )}
 
-        <div className={`testimonials__clients ${isVisible ? 'testimonials__clients--visible' : ''}`}>
+        <motion.div 
+          className="testimonials__clients"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
           <p className="testimonials__clients-label">Trusted by leading brands across India</p>
           <div className="testimonials__logos">
             {CLIENTS.map((name) => <span key={name} className="testimonials__logo">{name}</span>)}
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

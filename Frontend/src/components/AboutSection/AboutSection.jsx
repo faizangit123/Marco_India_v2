@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { motion } from 'framer-motion';
 import { Shield, Target, Eye, Users, MapPin, Headphones, Award } from 'lucide-react';
 import './AboutSection.css';
 
@@ -96,7 +97,13 @@ const AboutSection = () => {
     <section className="about section" ref={sectionRef} id="about">
       <div className="container">
         {/* Header */}
-        <div className={`about__header ${isVisible ? 'about__header--visible' : ''}`}>
+        <motion.div 
+          className="about__header"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-50px' }}
+          transition={{ duration: 0.6, ease: 'easeOut' }}
+        >
           <span className="about__badge">Who We Are</span>
           <h2 className="about__title">
             Building Trust Through <span className="about__title-accent">Excellence</span>
@@ -105,27 +112,39 @@ const AboutSection = () => {
             Since 2015, Marco India has been at the forefront of security and connectivity
             infrastructure — delivering end-to-end solutions that businesses rely on every day.
           </p>
-        </div>
+        </motion.div>
 
         {/* Pillars */}
-        <div className="about__pillars">
+        <motion.div 
+          className="about__pillars"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: '-50px' }}
+          variants={{
+            hidden: {},
+            visible: { transition: { staggerChildren: 0.1 } }
+          }}
+        >
           {PILLARS.map((pillar, i) => {
             const Icon = pillar.icon;
             return (
-              <div
+              <motion.div
                 key={pillar.title}
-                className={`about__pillar ${isVisible ? 'about__pillar--visible' : ''}`}
-                style={{ transitionDelay: `${i * 120}ms` }}
+                className="about__pillar"
+                variants={{
+                  hidden: { opacity: 0, y: 20 },
+                  visible: { opacity: 1, y: 0, transition: { duration: 0.5 } }
+                }}
               >
                 <div className="about__pillar-icon">
                   <Icon size={24} />
                 </div>
                 <h3 className="about__pillar-title">{pillar.title}</h3>
                 <p className="about__pillar-text">{pillar.text}</p>
-              </div>
+              </motion.div>
             );
           })}
-        </div>
+        </motion.div>
 
         {/* Stats Bar */}
         <div className={`about__stats ${isVisible ? 'about__stats--visible' : ''}`}>

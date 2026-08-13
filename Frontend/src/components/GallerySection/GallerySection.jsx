@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { motion } from 'framer-motion';
 import { X, ZoomIn, Loader } from 'lucide-react';
 import apiClient from '../../api/client';
 import './GallerySection.css';
@@ -61,7 +62,13 @@ const GallerySection = () => {
   return (
     <section className="gallery section" ref={sectionRef} id="gallery">
       <div className="container">
-        <div className={`gallery__header ${isVisible ? 'gallery__header--visible' : ''}`}>
+        <motion.div 
+          className="gallery__header"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-50px' }}
+          transition={{ duration: 0.6, ease: 'easeOut' }}
+        >
           <span className="gallery__badge">Our Work</span>
           <h2 className="gallery__title">
             Project <span className="gallery__title-accent">Gallery</span>
@@ -69,7 +76,7 @@ const GallerySection = () => {
           <p className="gallery__subtitle">
             A showcase of our installations across India — from CCTV systems to telecom infrastructure.
           </p>
-        </div>
+        </motion.div>
 
         <div className={`gallery__filters ${isVisible ? 'gallery__filters--visible' : ''}`}>
           {CATEGORIES.map((cat) => (
@@ -81,19 +88,35 @@ const GallerySection = () => {
         {loading ? (
           <div className="gallery__loading"><Loader size={24} className="auth-form__spinner" /></div>
         ) : (
-          <div className="gallery__grid">
+          <motion.div 
+            className="gallery__grid"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: '-50px' }}
+            variants={{
+              hidden: {},
+              visible: { transition: { staggerChildren: 0.1 } }
+            }}
+          >
             {filtered.map((project, i) => (
-              <div key={project.id || i} className={`gallery__item ${isVisible ? 'gallery__item--visible' : ''}`}
-                style={{ transitionDelay: `${i * 100}ms` }} onClick={() => setLightbox(project)}>
+              <motion.div 
+                key={project.id || i} 
+                className="gallery__item"
+                onClick={() => setLightbox(project)}
+                variants={{
+                  hidden: { opacity: 0, scale: 0.95 },
+                  visible: { opacity: 1, scale: 1, transition: { duration: 0.5 } }
+                }}
+              >
                 <img src={project.image || project.src} alt={project.title} className="gallery__img" loading="lazy" />
                 <div className="gallery__item-overlay">
                   <ZoomIn size={24} />
                   <span className="gallery__item-title">{project.title}</span>
                   <span className="gallery__item-location">{project.location}</span>
                 </div>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         )}
       </div>
 
