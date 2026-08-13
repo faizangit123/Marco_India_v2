@@ -1,7 +1,5 @@
-import { PrismaClient } from '@prisma/client';
+import ContactMessage from '../models/ContactMessage.js';
 import { sendContactNotification } from '../services/email.service.js';
-
-const prisma = new PrismaClient();
 
 const formatContact = (c) => ({
   id: c.id,
@@ -20,8 +18,8 @@ export const create = async (req, res, next) => {
   try {
     const { name, email, phone, service_type, message } = req.body;
     
-    const contact = await prisma.contactMessage.create({
-      data: { name, email, phone, serviceType: service_type, message }
+    const contact = await ContactMessage.create({
+      name, email, phone, serviceType: service_type, message
     });
 
     sendContactNotification(contact).catch(console.error);
@@ -34,7 +32,7 @@ export const create = async (req, res, next) => {
 
 export const adminList = async (req, res, next) => {
   try {
-    const contacts = await prisma.contactMessage.findMany({ orderBy: { createdAt: 'desc' } });
+    const contacts = await ContactMessage.find().sort({ createdAt: -1 });
     res.json(contacts.map(formatContact));
   } catch (error) {
     next(error);
@@ -46,7 +44,7 @@ export const adminDetail = async (req, res, next) => {
     const { id } = req.params;
     
     if (req.method === 'GET') {
-      const contact = await prisma.contactMessage.findUnique({ where: { id } });
+      const contact = await ContactMessage.findById(id);
       if (!contact) return res.status(404).json({ detail: 'Not found.' });
       return res.json(formatContact(contact));
     } else if (req.method === 'PATCH') {
@@ -55,10 +53,10 @@ export const adminDetail = async (req, res, next) => {
       if (status) data.status = status;
       if (admin_notes !== undefined) data.adminNotes = admin_notes;
 
-      const contact = await prisma.contactMessage.update({ where: { id }, data });
+      const contact = await ContactMessage.findByIdAndUpdate(id, data, { new: true });
       return res.json(formatContact(contact));
     } else if (req.method === 'DELETE') {
-      await prisma.contactMessage.delete({ where: { id } });
+      await ContactMessage.findByIdAndDelete(id);
       return res.status(204).send();
     }
   } catch (error) {

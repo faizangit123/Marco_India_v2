@@ -1,7 +1,5 @@
-import { PrismaClient } from '@prisma/client';
+import Inquiry from '../models/Inquiry.js';
 import { sendInquiryNotification, sendInquiryConfirmation } from '../services/email.service.js';
-
-const prisma = new PrismaClient();
 
 export const listCreate = async (req, res, next) => {
   try {
@@ -14,11 +12,7 @@ export const listCreate = async (req, res, next) => {
         if (service_type) where.serviceType = service_type;
         if (status) where.status = status;
 
-        const inquiries = await prisma.inquiry.findMany({
-          where,
-          orderBy: { createdAt: 'desc' },
-          include: { user: true }
-        });
+        const inquiries = await Inquiry.find(where).sort({ createdAt: -1 }).populate('userId');
 
         return res.json(inquiries.map(i => ({
           id: i.id,
@@ -27,15 +21,12 @@ export const listCreate = async (req, res, next) => {
           service_type: i.serviceType,
           status: i.status,
           admin_notes: i.adminNotes,
-          user_email: i.user?.email,
+          user_email: i.userId?.email,
           created_at: i.createdAt,
           updated_at: i.updatedAt
         })));
       } else {
-        const inquiries = await prisma.inquiry.findMany({
-          where: { userId: req.user.id },
-          orderBy: { createdAt: 'desc' }
-        });
+        const inquiries = await Inquiry.find({ userId: req.user.id }).sort({ createdAt: -1 });
 
         return res.json(inquiries.map(i => ({
           id: i.id,
@@ -50,13 +41,11 @@ export const listCreate = async (req, res, next) => {
     } else if (req.method === 'POST') {
       const { name, phone, service_type } = req.body;
       
-      const inquiry = await prisma.inquiry.create({
-        data: {
-          name,
-          phone,
-          serviceType: service_type,
-          userId: req.user ? req.user.id : null
-        }
+      const inquiry = await Inquiry.create({
+        name,
+        phone,
+        serviceType: service_type,
+        userId: req.user ? req.user.id : null
       });
 
       sendInquiryNotification(inquiry).catch(console.error);
@@ -84,10 +73,7 @@ export const detail = async (req, res, next) => {
     const { id } = req.params;
     
     if (req.method === 'GET') {
-      const inquiry = await prisma.inquiry.findUnique({
-        where: { id },
-        include: { user: true }
-      });
+      const inquiry = await Inquiry.findById(id).populate('userId');
       if (!inquiry) return res.status(404).json({ detail: 'Not found.' });
       
       return res.json({
@@ -97,7 +83,7 @@ export const detail = async (req, res, next) => {
         service_type: inquiry.serviceType,
         status: inquiry.status,
         admin_notes: inquiry.adminNotes,
-        user_email: inquiry.user?.email,
+        user_email: inquiry.userId?.email,
         created_at: inquiry.createdAt,
         updated_at: inquiry.updatedAt
       });
@@ -107,11 +93,7 @@ export const detail = async (req, res, next) => {
       if (status) data.status = status;
       if (admin_notes !== undefined) data.adminNotes = admin_notes;
 
-      const inquiry = await prisma.inquiry.update({
-        where: { id },
-        data,
-        include: { user: true }
-      });
+      const inquiry = await Inquiry.findByIdAndUpdate(id, data, { new: true }).populate('userId');
       
       return res.json({
         id: inquiry.id,
@@ -120,7 +102,7 @@ export const detail = async (req, res, next) => {
         service_type: inquiry.serviceType,
         status: inquiry.status,
         admin_notes: inquiry.adminNotes,
-        user_email: inquiry.user?.email,
+        user_email: inquiry.userId?.email,
         created_at: inquiry.createdAt,
         updated_at: inquiry.updatedAt
       });

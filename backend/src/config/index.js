@@ -1,11 +1,13 @@
 import dotenv from 'dotenv';
+import crypto from 'crypto';
 dotenv.config();
 
 export const config = {
   port: process.env.PORT || 5000,
+  mongoUri: process.env.MONGODB_URI,
   jwt: {
-    secret: process.env.JWT_SECRET,
-    refreshSecret: process.env.JWT_REFRESH_SECRET,
+    secret: process.env.JWT_SECRET || crypto.randomBytes(32).toString('hex'),
+    refreshSecret: process.env.JWT_REFRESH_SECRET || crypto.randomBytes(32).toString('hex'),
   },
   google: {
     clientId: process.env.GOOGLE_OAUTH_CLIENT_ID,

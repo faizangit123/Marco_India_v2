@@ -1,32 +1,39 @@
-import { ZodError } from 'zod';
-import { Prisma } from '@prisma/client';
-
 const errorHandler = (err, req, res, next) => {
-  console.error(err);
+  console.error(err.stack);
 
-  if (err instanceof ZodError) {
-    const errors = err.errors.reduce((acc, curr) => {
-      acc[curr.path[0]] = [curr.message];
-      return acc;
-    }, {});
-    return res.status(400).json(errors);
+  // Mongoose validation error
+  if (err.name === 'ValidationError') {
+    const errors = Object.values(err.errors).map(e => e.message);
+    return res.status(400).json({ detail: errors.join(', ') });
   }
 
-  if (err instanceof Prisma.PrismaClientKnownRequestError) {
-    if (err.code === 'P2002') {
-      const field = err.meta?.target?.[0] || 'Field';
-      return res.status(400).json({ [field]: ['This field must be unique.'] });
-    }
-    if (err.code === 'P2025') {
-      return res.status(404).json({ detail: 'Not found.' });
-    }
+  // Mongoose duplicate key
+  if (err.code === 11000) {
+    const field = Object.keys(err.keyPattern)[0];
+    return res.status(409).json({ detail: `${field} already exists` });
   }
 
-  if (err.name === 'UnauthorizedError') {
-    return res.status(401).json({ detail: 'Authentication required' });
+  // Mongoose CastError (invalid ObjectId)
+  if (err.name === 'CastError') {
+    return res.status(400).json({ detail: 'Invalid ID format' });
   }
 
-  res.status(500).json({ detail: 'Internal server error' });
+  // JWT errors
+  if (err.name === 'JsonWebTokenError') {
+    return res.status(401).json({ detail: 'Invalid token' });
+  }
+  if (err.name === 'TokenExpiredError') {
+    return res.status(401).json({ detail: 'Token expired' });
+  }
+
+  // Zod validation error
+  if (err.name === 'ZodError') {
+    return res.status(400).json({ detail: err.errors.map(e => e.message).join(', ') });
+  }
+
+  res.status(err.statusCode || 500).json({
+    detail: err.message || 'Internal server error'
+  });
 };
 
 export default errorHandler;

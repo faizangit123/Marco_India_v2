@@ -1,6 +1,5 @@
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import GalleryItem from '../models/GalleryItem.js';
+import GallerySetting from '../models/GallerySetting.js';
 
 const formatItem = (i) => ({
   id: i.id,
@@ -15,16 +14,14 @@ const formatItem = (i) => ({
 
 export const publicList = async (req, res, next) => {
   try {
-    let setting = await prisma.gallerySetting.findUnique({ where: { id: 1 } });
+    let setting = await GallerySetting.findOne();
     if (!setting) setting = { active: true };
 
     if (!setting.active) {
       return res.json({ active: false, results: [] });
     }
 
-    const items = await prisma.galleryItem.findMany({
-      orderBy: { createdAt: 'desc' }
-    });
+    const items = await GalleryItem.find().sort({ createdAt: -1 });
 
     res.json({
       active: true,
@@ -37,9 +34,7 @@ export const publicList = async (req, res, next) => {
 
 export const adminList = async (req, res, next) => {
   try {
-    const items = await prisma.galleryItem.findMany({
-      orderBy: { createdAt: 'desc' }
-    });
+    const items = await GalleryItem.find().sort({ createdAt: -1 });
     res.json(items.map(formatItem));
   } catch (error) {
     next(error);
@@ -51,15 +46,13 @@ export const create = async (req, res, next) => {
     const { title, description, category, location, is_featured } = req.body;
     if (!req.file) return res.status(400).json({ detail: 'Image is required' });
 
-    const item = await prisma.galleryItem.create({
-      data: {
-        title,
-        description,
-        category,
-        location,
-        isFeatured: is_featured === 'true' || is_featured === true,
-        image: `/uploads/gallery/${req.file.filename}`
-      }
+    const item = await GalleryItem.create({
+      title,
+      description,
+      category,
+      location,
+      isFeatured: is_featured === 'true' || is_featured === true,
+      image: `/uploads/gallery/${req.file.filename}`
     });
 
     res.status(201).json(formatItem(item));
@@ -73,7 +66,7 @@ export const detail = async (req, res, next) => {
     const { id } = req.params;
     
     if (req.method === 'GET') {
-      const item = await prisma.galleryItem.findUnique({ where: { id } });
+      const item = await GalleryItem.findById(id);
       if (!item) return res.status(404).json({ detail: 'Not found.' });
       return res.json(formatItem(item));
     } else if (req.method === 'PATCH') {
@@ -84,13 +77,10 @@ export const detail = async (req, res, next) => {
         delete data.is_featured;
       }
       
-      const item = await prisma.galleryItem.update({
-        where: { id },
-        data
-      });
+      const item = await GalleryItem.findByIdAndUpdate(id, data, { new: true });
       return res.json(formatItem(item));
     } else if (req.method === 'DELETE') {
-      await prisma.galleryItem.delete({ where: { id } });
+      await GalleryItem.findByIdAndDelete(id);
       return res.status(204).send();
     }
   } catch (error) {
@@ -101,16 +91,16 @@ export const detail = async (req, res, next) => {
 export const settings = async (req, res, next) => {
   try {
     if (req.method === 'GET') {
-      let setting = await prisma.gallerySetting.findUnique({ where: { id: 1 } });
-      if (!setting) setting = await prisma.gallerySetting.create({ data: { id: 1, active: true } });
+      let setting = await GallerySetting.findOne();
+      if (!setting) setting = await GallerySetting.create({ active: true });
       return res.json(setting);
     } else if (req.method === 'PATCH') {
       const { active } = req.body;
-      const setting = await prisma.gallerySetting.upsert({
-        where: { id: 1 },
-        update: { active },
-        create: { id: 1, active }
-      });
+      const setting = await GallerySetting.findOneAndUpdate(
+        {},
+        { active },
+        { upsert: true, new: true }
+      );
       return res.json(setting);
     }
   } catch (error) {

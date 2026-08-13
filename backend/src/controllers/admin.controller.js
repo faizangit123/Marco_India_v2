@@ -1,28 +1,25 @@
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import User from '../models/User.js';
+import Inquiry from '../models/Inquiry.js';
+import GalleryItem from '../models/GalleryItem.js';
+import Comment from '../models/Comment.js';
+import ContactMessage from '../models/ContactMessage.js';
+import Testimonial from '../models/Testimonial.js';
 
 export const getStats = async (req, res, next) => {
   try {
     const [totalInquiries, pendingRequests, totalUsers, galleryItems, totalComments, totalContacts, totalTestimonials] = await Promise.all([
-      prisma.inquiry.count(),
-      prisma.inquiry.count({ where: { status: 'submitted' } }),
-      prisma.user.count(),
-      prisma.galleryItem.count(),
-      prisma.comment.count(),
-      prisma.contactMessage.count(),
-      prisma.testimonial.count()
+      Inquiry.countDocuments(),
+      Inquiry.countDocuments({ status: 'submitted' }),
+      User.countDocuments(),
+      GalleryItem.countDocuments(),
+      Comment.countDocuments(),
+      ContactMessage.countDocuments(),
+      Testimonial.countDocuments()
     ]);
 
-    const recentInquiries = await prisma.inquiry.findMany({
-      take: 5,
-      orderBy: { createdAt: 'desc' }
-    });
+    const recentInquiries = await Inquiry.find().sort({ createdAt: -1 }).limit(5);
 
-    const recentContacts = await prisma.contactMessage.findMany({
-      take: 5,
-      orderBy: { createdAt: 'desc' }
-    });
+    const recentContacts = await ContactMessage.find().sort({ createdAt: -1 }).limit(5);
 
     // Mock chart data for last 6 months to match Django logic or generate simple mock
     const chartData = [
@@ -57,7 +54,7 @@ export const getStats = async (req, res, next) => {
 
 export const listUsers = async (req, res, next) => {
   try {
-    const users = await prisma.user.findMany({ orderBy: { dateJoined: 'desc' } });
+    const users = await User.find().sort({ dateJoined: -1 });
     res.json(users.map(u => ({
       id: u.id, email: u.email, name: u.name, phone: u.phone, is_staff: u.isStaff, is_active: u.isActive, date_joined: u.dateJoined
     })));
@@ -71,7 +68,7 @@ export const userDetail = async (req, res, next) => {
     const { id } = req.params;
     
     if (req.method === 'GET') {
-      const user = await prisma.user.findUnique({ where: { id } });
+      const user = await User.findById(id);
       if (!user) return res.status(404).json({ detail: 'Not found.' });
       return res.json({
         id: user.id, email: user.email, name: user.name, phone: user.phone, is_staff: user.isStaff, is_active: user.isActive, date_joined: user.dateJoined
@@ -82,12 +79,12 @@ export const userDetail = async (req, res, next) => {
       if (is_staff !== undefined) data.isStaff = is_staff;
       if (is_active !== undefined) data.isActive = is_active;
       
-      const user = await prisma.user.update({ where: { id }, data });
+      const user = await User.findByIdAndUpdate(id, data, { new: true });
       return res.json({
         id: user.id, email: user.email, name: user.name, phone: user.phone, is_staff: user.isStaff, is_active: user.isActive, date_joined: user.dateJoined
       });
     } else if (req.method === 'DELETE') {
-      await prisma.user.delete({ where: { id } });
+      await User.findByIdAndDelete(id);
       return res.status(204).send();
     }
   } catch (error) {

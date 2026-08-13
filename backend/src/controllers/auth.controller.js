@@ -1,12 +1,11 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { PrismaClient } from '@prisma/client';
+import User from '../models/User.js';
+import RefreshToken from '../models/RefreshToken.js';
 import { config } from '../config/index.js';
 import { verifyGoogleToken } from '../services/google.service.js';
 import { sendPasswordResetEmail } from '../services/email.service.js';
 import crypto from 'crypto';
-
-const prisma = new PrismaClient();
 
 const generateTokens = (user) => {
   const access = jwt.sign(
@@ -39,24 +38,22 @@ export const register = async (req, res, next) => {
   try {
     const { email, name, phone, password } = req.body;
 
-    const existingUser = await prisma.user.findUnique({ where: { email } });
+    const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ detail: 'User with this email already exists' });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = await prisma.user.create({
-      data: { email, name, phone, password: hashedPassword }
+    const user = await User.create({
+      email, name, phone, password: hashedPassword
     });
 
     const { access, refresh, tokenId } = generateTokens(user);
 
-    await prisma.refreshToken.create({
-      data: {
-        token: refresh,
-        userId: user.id,
-        expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
-      }
+    await RefreshToken.create({
+      token: refresh,
+      userId: user.id,
+      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
     });
 
     res.status(201).json({
@@ -73,7 +70,7 @@ export const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
     
-    const user = await prisma.user.findUnique({ where: { email } });
+    const user = await User.findOne({ email });
     if (!user || !user.isActive) {
       return res.status(401).json({ detail: 'No active account found with the given credentials' });
     }
@@ -89,12 +86,10 @@ export const login = async (req, res, next) => {
 
     const { access, refresh, tokenId } = generateTokens(user);
 
-    await prisma.refreshToken.create({
-      data: {
-        token: refresh,
-        userId: user.id,
-        expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
-      }
+    await RefreshToken.create({
+      token: refresh,
+      userId: user.id,
+      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
     });
 
     res.json({
@@ -111,10 +106,10 @@ export const logout = async (req, res, next) => {
   try {
     const { refresh } = req.body;
     if (refresh) {
-      await prisma.refreshToken.updateMany({
-        where: { token: refresh, userId: req.user.id },
-        data: { blacklisted: true }
-      });
+      await RefreshToken.updateMany(
+        { token: refresh, userId: req.user.id },
+        { blacklisted: true }
+      );
     }
     res.status(200).json({ detail: 'Successfully logged out' });
   } catch (error) {
@@ -131,18 +126,19 @@ export const googleLogin = async (req, res, next) => {
 
     const { email, name, googleId, picture } = await verifyGoogleToken(credential);
 
-    let user = await prisma.user.findUnique({ where: { email } });
+    let user = await User.findOne({ email });
     
     if (user) {
       if (!user.googleId) {
-        user = await prisma.user.update({
-          where: { email },
-          data: { googleId, avatar: user.avatar || picture }
-        });
+        user = await User.findOneAndUpdate(
+          { email },
+          { googleId, avatar: user.avatar || picture },
+          { new: true }
+        );
       }
     } else {
-      user = await prisma.user.create({
-        data: { email, name, googleId, avatar: picture, password: '' }
+      user = await User.create({
+        email, name, googleId, avatar: picture, password: ''
       });
     }
 
@@ -152,12 +148,10 @@ export const googleLogin = async (req, res, next) => {
 
     const { access, refresh, tokenId } = generateTokens(user);
 
-    await prisma.refreshToken.create({
-      data: {
-        token: refresh,
-        userId: user.id,
-        expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
-      }
+    await RefreshToken.create({
+      token: refresh,
+      userId: user.id,
+      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
     });
 
     res.json({
@@ -189,10 +183,7 @@ export const updateMe = async (req, res, next) => {
       data.avatar = `/uploads/avatars/${req.file.filename}`;
     }
 
-    const user = await prisma.user.update({
-      where: { id: req.user.id },
-      data
-    });
+    const user = await User.findByIdAndUpdate(req.user.id, data, { new: true });
 
     res.json(formatUserResponse(user));
   } catch (error) {
@@ -204,7 +195,7 @@ export const changePassword = async (req, res, next) => {
   try {
     const { old_password, new_password } = req.body;
     
-    const user = await prisma.user.findUnique({ where: { id: req.user.id } });
+    const user = await User.findById(req.user.id);
     
     if (!user.password) {
       return res.status(400).json({ detail: 'Account created with Google, no password to change' });
@@ -216,10 +207,7 @@ export const changePassword = async (req, res, next) => {
     }
 
     const hashedPassword = await bcrypt.hash(new_password, 10);
-    await prisma.user.update({
-      where: { id: user.id },
-      data: { password: hashedPassword }
-    });
+    await User.findByIdAndUpdate(user.id, { password: hashedPassword });
 
     res.json({ detail: 'Password changed successfully' });
   } catch (error) {
@@ -230,7 +218,7 @@ export const changePassword = async (req, res, next) => {
 export const passwordResetRequest = async (req, res, next) => {
   try {
     const { email } = req.body;
-    const user = await prisma.user.findUnique({ where: { email } });
+    const user = await User.findOne({ email });
     
     if (user && user.isActive) {
       const token = jwt.sign({ userId: user.id, type: 'reset' }, config.jwt.secret, { expiresIn: '1h' });
@@ -260,10 +248,7 @@ export const passwordResetConfirm = async (req, res, next) => {
     }
 
     const hashedPassword = await bcrypt.hash(new_password, 10);
-    await prisma.user.update({
-      where: { id: decoded.userId },
-      data: { password: hashedPassword }
-    });
+    await User.findByIdAndUpdate(decoded.userId, { password: hashedPassword });
 
     res.json({ detail: 'Password has been reset' });
   } catch (error) {
@@ -278,7 +263,7 @@ export const refreshToken = async (req, res, next) => {
       return res.status(400).json({ detail: 'Refresh token is required' });
     }
 
-    const tokenRecord = await prisma.refreshToken.findUnique({ where: { token: refresh } });
+    const tokenRecord = await RefreshToken.findOne({ token: refresh });
     if (!tokenRecord || tokenRecord.blacklisted || tokenRecord.expiresAt < new Date()) {
       return res.status(401).json({ detail: 'Token is invalid or expired' });
     }
@@ -290,24 +275,19 @@ export const refreshToken = async (req, res, next) => {
       return res.status(401).json({ detail: 'Token is invalid or expired' });
     }
 
-    const user = await prisma.user.findUnique({ where: { id: decoded.userId } });
+    const user = await User.findById(decoded.userId);
     if (!user || !user.isActive) {
       return res.status(401).json({ detail: 'User is inactive' });
     }
 
-    await prisma.refreshToken.update({
-      where: { id: tokenRecord.id },
-      data: { blacklisted: true }
-    });
+    await RefreshToken.findByIdAndUpdate(tokenRecord.id, { blacklisted: true });
 
     const newTokens = generateTokens(user);
 
-    await prisma.refreshToken.create({
-      data: {
-        token: newTokens.refresh,
-        userId: user.id,
-        expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
-      }
+    await RefreshToken.create({
+      token: newTokens.refresh,
+      userId: user.id,
+      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
     });
 
     res.json({
@@ -321,7 +301,7 @@ export const refreshToken = async (req, res, next) => {
 
 export const deleteAccount = async (req, res, next) => {
   try {
-    await prisma.user.delete({ where: { id: req.user.id } });
+    await User.findByIdAndDelete(req.user.id);
     res.status(204).send();
   } catch (error) {
     next(error);

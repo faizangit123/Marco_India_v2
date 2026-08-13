@@ -1,8 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { config } from '../config/index.js';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import User from '../models/User.js';
 
 export const authenticate = async (req, res, next) => {
   try {
@@ -10,19 +8,13 @@ export const authenticate = async (req, res, next) => {
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return res.status(401).json({ detail: 'Authentication credentials were not provided.' });
     }
-
     const token = authHeader.split(' ')[1];
-    
     try {
       const decoded = jwt.verify(token, config.jwt.secret);
-      const user = await prisma.user.findUnique({
-        where: { id: decoded.userId }
-      });
-      
+      const user = await User.findById(decoded.userId);
       if (!user || !user.isActive) {
         return res.status(401).json({ detail: 'User not found or inactive' });
       }
-      
       req.user = user;
       next();
     } catch (err) {
@@ -36,23 +28,13 @@ export const authenticate = async (req, res, next) => {
 export const optionalAuth = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return next();
-    }
-
+    if (!authHeader || !authHeader.startsWith('Bearer ')) return next();
     const token = authHeader.split(' ')[1];
     try {
       const decoded = jwt.verify(token, config.jwt.secret);
-      const user = await prisma.user.findUnique({
-        where: { id: decoded.userId }
-      });
-      
-      if (user && user.isActive) {
-        req.user = user;
-      }
-    } catch (err) {
-      // Ignore errors for optional auth
-    }
+      const user = await User.findById(decoded.userId);
+      if (user && user.isActive) req.user = user;
+    } catch (err) {}
     next();
   } catch (error) {
     next();
