@@ -40,12 +40,9 @@ import Analytics from "./pages/admin/Analytics";
 import Settings from "./pages/admin/Settings";
 import Notifications from "./pages/admin/Notifications";
 
-import RotatingBanner from "./components/RotatingBanner/RotatingBanner";
-
 const App = () => (
   <BrowserRouter>
     <AuthProvider>
-      <RotatingBanner />
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />

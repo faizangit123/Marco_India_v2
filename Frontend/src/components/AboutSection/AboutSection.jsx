@@ -1,157 +1,63 @@
-import { useState, useEffect, useRef } from 'react';
-import { motion } from 'framer-motion';
-import { Shield, Target, Eye, Users, MapPin, Headphones, Award } from 'lucide-react';
+import { useRef } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import { ArrowRight } from 'lucide-react';
 import './AboutSection.css';
 
-const STATS = [
-  { icon: Users, value: 500, suffix: '+', label: 'Projects Delivered' },
-  { icon: MapPin, value: 50, suffix: '+', label: 'Cities Covered' },
-  { icon: Headphones, value: 24, suffix: '/7', label: 'Support Available' },
-  { icon: Award, value: 8, suffix: '+', label: 'Years Experience' },
-];
-
-const PILLARS = [
-  {
-    icon: Shield,
-    title: 'Our Mission',
-    text: 'To provide world-class CCTV surveillance, signal boosting, and telecom infrastructure solutions that empower businesses and communities across India.',
-  },
-  {
-    icon: Target,
-    title: 'Our Approach',
-    text: 'We combine cutting-edge technology with hands-on expertise — delivering tailor-made installations that are engineered for reliability and built for scale.',
-  },
-  {
-    icon: Eye,
-    title: 'Our Vision',
-    text: 'To become India\'s most trusted name in security and connectivity infrastructure, setting new benchmarks for quality and service excellence.',
-  },
-];
-
-/* ---- Animated Counter Hook ---- */
-const useCounter = (target, duration = 2000, start = false) => {
-  const [count, setCount] = useState(0);
-
-  useEffect(() => {
-    if (!start) return;
-    let startTime = null;
-    let raf;
-
-    const step = (timestamp) => {
-      if (!startTime) startTime = timestamp;
-      const progress = Math.min((timestamp - startTime) / duration, 1);
-      // ease-out cubic
-      const eased = 1 - Math.pow(1 - progress, 3);
-      setCount(Math.floor(eased * target));
-      if (progress < 1) raf = requestAnimationFrame(step);
-    };
-
-    raf = requestAnimationFrame(step);
-    return () => cancelAnimationFrame(raf);
-  }, [target, duration, start]);
-
-  return count;
-};
-
-const StatCard = ({ stat, isVisible, index }) => {
-  const Icon = stat.icon;
-  const count = useCounter(stat.value, 2200, isVisible);
-
-  return (
-    <div
-      className={`about-stat ${isVisible ? 'about-stat--visible' : ''}`}
-      style={{ transitionDelay: `${index * 150}ms` }}
-    >
-      <div className="about-stat__icon">
-        <Icon size={24} />
-      </div>
-      <span className="about-stat__value">
-        {count}
-        {stat.suffix}
-      </span>
-      <span className="about-stat__label">{stat.label}</span>
-    </div>
-  );
-};
-
 const AboutSection = () => {
-  const [isVisible, setIsVisible] = useState(false);
-  const sectionRef = useRef(null);
+  const containerRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start end", "end start"]
+  });
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.1 }
-    );
-
-    if (sectionRef.current) observer.observe(sectionRef.current);
-    return () => observer.disconnect();
-  }, []);
+  const y1 = useTransform(scrollYProgress, [0, 1], [50, -50]);
 
   return (
-    <section className="about section" ref={sectionRef} id="about">
-      <div className="container">
-        {/* Header */}
+    <section className="about section" id="about" ref={containerRef}>
+      <div className="container about__container">
+        
         <motion.div 
-          className="about__header"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-50px' }}
-          transition={{ duration: 0.6, ease: 'easeOut' }}
+          className="about__content"
+          initial={{ opacity: 0, x: -50 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.8 }}
         >
-          <span className="about__badge">Who We Are</span>
+          <span className="about__label">— ABOUT MARCO INDIA</span>
           <h2 className="about__title">
-            Building Trust Through <span className="about__title-accent">Excellence</span>
+            WE BUILD THE INFRASTRUCTURE BEHIND MODERN BUSINESS.
           </h2>
-          <p className="about__subtitle">
-            Since 2015, Marco India has been at the forefront of security and connectivity
-            infrastructure — delivering end-to-end solutions that businesses rely on every day.
-          </p>
+          <div className="about__text">
+            <p>
+              Since 2015, Marco India has been at the forefront of security and connectivity
+              infrastructure. We deliver end-to-end solutions that businesses across India rely on every day.
+            </p>
+            <p>
+              Our approach combines cutting-edge technology with hands-on expertise, ensuring that every installation is engineered for reliability and built to scale with your organization's needs.
+            </p>
+          </div>
+          <a href="/about" className="about__link">
+            <span>Discover Our Story</span>
+            <ArrowRight size={18} />
+          </a>
         </motion.div>
 
-        {/* Pillars */}
         <motion.div 
-          className="about__pillars"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: '-50px' }}
-          variants={{
-            hidden: {},
-            visible: { transition: { staggerChildren: 0.1 } }
-          }}
+          className="about__image-wrapper"
+          initial={{ opacity: 0, x: 50 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.8 }}
         >
-          {PILLARS.map((pillar, i) => {
-            const Icon = pillar.icon;
-            return (
-              <motion.div
-                key={pillar.title}
-                className="about__pillar"
-                variants={{
-                  hidden: { opacity: 0, y: 20 },
-                  visible: { opacity: 1, y: 0, transition: { duration: 0.5 } }
-                }}
-              >
-                <div className="about__pillar-icon">
-                  <Icon size={24} />
-                </div>
-                <h3 className="about__pillar-title">{pillar.title}</h3>
-                <p className="about__pillar-text">{pillar.text}</p>
-              </motion.div>
-            );
-          })}
+          <motion.div style={{ y: y1 }} className="about__image-inner">
+            <img 
+              src="https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=1200&q=80" 
+              alt="Telecom Infrastructure" 
+              className="about__image"
+            />
+          </motion.div>
         </motion.div>
 
-        {/* Stats Bar */}
-        <div className={`about__stats ${isVisible ? 'about__stats--visible' : ''}`}>
-          {STATS.map((stat, i) => (
-            <StatCard key={stat.label} stat={stat} isVisible={isVisible} index={i} />
-          ))}
-        </div>
       </div>
     </section>
   );

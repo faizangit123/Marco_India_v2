@@ -1,37 +1,16 @@
 import { useState, useEffect, useRef } from 'react';
-import { motion } from 'framer-motion';
-import { Star, Quote, ChevronLeft, ChevronRight, Loader } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Quote, ChevronLeft, ChevronRight, Loader } from 'lucide-react';
 import apiClient from '../../api/client';
 import './TestimonialsSection.css';
 
 const CLIENTS = ['Reliance', 'Tata Group', 'Airtel', 'Jio', 'Wipro', 'HCL', 'Infosys', 'Godrej'];
 
-const StarRating = ({ rating }) => (
-  <div className="testimonial__stars">
-    {Array.from({ length: 5 }, (_, i) => (
-      <Star key={i} size={14} className={i < rating ? 'testimonial__star--filled' : 'testimonial__star--empty'} />
-    ))}
-  </div>
-);
-
 const TestimonialsSection = () => {
-  const [isVisible, setIsVisible] = useState(false);
   const [active, setActive] = useState(0);
   const [testimonials, setTestimonials] = useState([]);
   const [loading, setLoading] = useState(true);
   const [sectionActive, setSectionActive] = useState(true);
-  const sectionRef = useRef(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) { setIsVisible(true); observer.disconnect(); }
-      },
-      { threshold: 0.1 }
-    );
-    if (sectionRef.current) observer.observe(sectionRef.current);
-    return () => observer.disconnect();
-  }, []);
 
   useEffect(() => {
     const fetchTestimonials = async () => {
@@ -49,72 +28,61 @@ const TestimonialsSection = () => {
     fetchTestimonials();
   }, []);
 
-  useEffect(() => {
-    if (!isVisible || testimonials.length === 0) return;
-    const timer = setInterval(() => {
-      setActive((prev) => (prev + 1) % testimonials.length);
-    }, 5000);
-    return () => clearInterval(timer);
-  }, [isVisible, testimonials.length]);
-
   if (!sectionActive || (!loading && testimonials.length === 0)) return null;
 
-  const prev = () => setActive((a) => (a - 1 + testimonials.length) % testimonials.length);
   const next = () => setActive((a) => (a + 1) % testimonials.length);
+  const prev = () => setActive((a) => (a - 1 + testimonials.length) % testimonials.length);
 
   return (
-    <section className="testimonials section" ref={sectionRef} id="testimonials">
+    <section className="testimonials section" id="testimonials">
       <div className="container">
-        <motion.div 
-          className="testimonials__header"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-50px' }}
-          transition={{ duration: 0.6, ease: 'easeOut' }}
-        >
-          <span className="testimonials__badge">Testimonials</span>
-          <h2 className="testimonials__title">
-            What Our <span className="testimonials__title-accent">Clients Say</span>
-          </h2>
-        </motion.div>
+        
+        <div className="testimonials__layout">
+          <motion.div 
+            className="testimonials__left"
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: '-100px' }}
+            transition={{ duration: 0.6 }}
+          >
+            <span className="testimonials__badge">— TESTIMONIALS</span>
+            <h2 className="testimonials__title">WHAT OUR CLIENTS SAY.</h2>
+          </motion.div>
 
-        {loading ? (
-          <div className="gallery__loading"><Loader size={24} className="auth-form__spinner" /></div>
-        ) : (
-          <>
-            <div className={`testimonials__carousel ${isVisible ? 'testimonials__carousel--visible' : ''}`}>
-              <button className="testimonials__nav testimonials__nav--prev" onClick={prev} aria-label="Previous testimonial">
-                <ChevronLeft size={20} />
-              </button>
-              <div className="testimonials__track">
-                {testimonials.map((t, i) => (
-                  <div key={t.id || i} className={`testimonial__card ${i === active ? 'testimonial__card--active' : ''}`}>
-                    <Quote size={28} className="testimonial__quote-icon" />
-                    <p className="testimonial__text">{t.text}</p>
-                    <StarRating rating={t.rating} />
-                    <div className="testimonial__author">
-                      <div className="testimonial__avatar">{(t.name || 'U').charAt(0)}</div>
-                      <div>
-                        <strong className="testimonial__name">{t.name}</strong>
-                        <span className="testimonial__role">{t.role}</span>
+          <div className="testimonials__right">
+            {loading ? (
+              <div className="testimonials__loading"><Loader size={24} className="auth-form__spinner" /></div>
+            ) : (
+              <div className="testimonials__carousel-wrap">
+                <Quote size={48} className="testimonials__quote-mark" strokeWidth={1} />
+                
+                <div className="testimonials__carousel">
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={active}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -20 }}
+                      transition={{ duration: 0.4 }}
+                      className="testimonial__card"
+                    >
+                      <p className="testimonial__text">"{testimonials[active].text}"</p>
+                      <div className="testimonial__author">
+                        <strong className="testimonial__name">{testimonials[active].name}</strong>
+                        <span className="testimonial__role">{testimonials[active].role}</span>
                       </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <button className="testimonials__nav testimonials__nav--next" onClick={next} aria-label="Next testimonial">
-                <ChevronRight size={20} />
-              </button>
-            </div>
+                    </motion.div>
+                  </AnimatePresence>
+                </div>
 
-            <div className="testimonials__dots">
-              {testimonials.map((_, i) => (
-                <button key={i} className={`testimonials__dot ${i === active ? 'testimonials__dot--active' : ''}`}
-                  onClick={() => setActive(i)} aria-label={`Go to testimonial ${i + 1}`} />
-              ))}
-            </div>
-          </>
-        )}
+                <div className="testimonials__controls">
+                  <button onClick={prev} className="testimonials__nav-btn"><ChevronLeft size={20} /></button>
+                  <button onClick={next} className="testimonials__nav-btn"><ChevronRight size={20} /></button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
 
         <motion.div 
           className="testimonials__clients"
@@ -123,7 +91,6 @@ const TestimonialsSection = () => {
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
-          <p className="testimonials__clients-label">Trusted by leading brands across India</p>
           <div className="testimonials__logos">
             {CLIENTS.map((name) => <span key={name} className="testimonials__logo">{name}</span>)}
           </div>

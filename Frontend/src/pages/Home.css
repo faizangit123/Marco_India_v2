@@ -1,3 +1,9 @@
+/* ============================================
+   Home Page Styles
+   ============================================ */
+
 .home {
-  flex: 1;
+  width: 100%;
+  overflow-x: hidden;
+  background-color: var(--color-bg-primary);
 }

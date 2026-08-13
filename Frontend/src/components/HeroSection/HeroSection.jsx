@@ -1,34 +1,37 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
-import ServiceRequestForm from '../ServiceRequestForm/ServiceRequestForm';
+import { ChevronRight, ArrowRight, ArrowLeft } from 'lucide-react';
 import './HeroSection.css';
 
 const SLIDES = [
   {
-    title: "CCTV & Security Solutions",
-    subtitle: "Protecting your premises with cutting-edge surveillance technology",
+    label: "Network Solutions",
+    title: "ENTERPRISE\nNETWORK\nINFRASTRUCTURE",
+    subtitle: "Building enterprise-grade network infrastructure for modern businesses across India.",
+    image: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=1920&q=80",
+    ctaText: "Explore Services",
+    ctaLink: "/services"
+  },
+  {
+    label: "Security Systems",
+    title: "INTELLIGENT\nCCTV &\nSURVEILLANCE",
+    subtitle: "Smart surveillance and security infrastructure protecting businesses 24/7.",
     image: "https://images.unsplash.com/photo-1557597774-9d273605dfa9?w=1920&q=80",
     ctaText: "Get a Quote",
     ctaLink: "/contact"
   },
   {
-    title: "Network Infrastructure",
-    subtitle: "Enterprise-grade networking solutions for modern businesses",
-    image: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=1920&q=80",
-    ctaText: "Our Services",
-    ctaLink: "/services"
-  },
-  {
-    title: "Fiber Optic & Telecom",
-    subtitle: "High-speed connectivity through advanced fiber optic installations",
+    label: "Fiber Optics",
+    title: "HIGH-SPEED\nFIBER OPTIC\nSOLUTIONS",
+    subtitle: "Delivering ultra-fast fiber optic connectivity for next-generation infrastructure.",
     image: "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=1920&q=80",
     ctaText: "Learn More",
     ctaLink: "/services/fiber-optic-cabling"
   },
   {
-    title: "AMC & Maintenance",
-    subtitle: "Reliable maintenance contracts to keep your systems running 24/7",
+    label: "Telecom Infrastructure",
+    title: "RELIABLE\nTELECOM\nINFRASTRUCTURE",
+    subtitle: "Comprehensive telecom and communication solutions you can depend on.",
     image: "https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=1920&q=80",
     ctaText: "Contact Us",
     ctaLink: "/contact"
@@ -47,18 +50,6 @@ const HeroSection = () => {
     return () => clearInterval(timer);
   }, [isHovered]);
 
-  const scrollToNext = () => {
-    const hero = document.querySelector('.hero');
-    if (hero) {
-      const nextSection = hero.nextElementSibling;
-      if (nextSection) {
-        nextSection.scrollIntoView({ behavior: 'smooth' });
-      } else {
-        window.scrollBy({ top: window.innerHeight, behavior: 'smooth' });
-      }
-    }
-  };
-
   const nextSlide = () => setCurrentIndex((prev) => (prev + 1) % SLIDES.length);
   const prevSlide = () => setCurrentIndex((prev) => (prev - 1 + SLIDES.length) % SLIDES.length);
 
@@ -68,132 +59,113 @@ const HeroSection = () => {
       onMouseEnter={() => setIsHovered(true)} 
       onMouseLeave={() => setIsHovered(false)}
     >
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={currentIndex}
-          initial={{ opacity: 0, scale: 1.05 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.8 }}
-          className="hero__bg"
-          style={{ backgroundImage: `url(${SLIDES[currentIndex].image})` }}
-        >
-          <div className="hero__overlay" />
-        </motion.div>
-      </AnimatePresence>
-
-      <div className="hero__content container">
-        <AnimatePresence mode="wait">
-          <motion.div 
-            key={currentIndex}
-            className="hero__text-content"
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-            variants={{
-              visible: { transition: { staggerChildren: 0.1 } },
-              hidden: {},
-              exit: { opacity: 0, transition: { duration: 0.2 } }
-            }}
-          >
-            <motion.span 
-              className="hero__badge my-[20px]"
-              variants={{
-                hidden: { opacity: 0, y: 20 },
-                visible: { opacity: 1, y: 0, transition: { duration: 0.5 } }
-              }}
-            >
-              Trusted Across India
-            </motion.span>
-            
-            <motion.h1 
-              className="hero__title"
-              variants={{
-                hidden: { opacity: 0, y: 30 },
-                visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
-              }}
-            >
-              {SLIDES[currentIndex].title.split(' ').map((word, i, arr) => (
-                <span key={i}>
-                  {i === arr.length - 1 ? <span className="hero__title-accent">{word}</span> : word + ' '}
-                </span>
-              ))}
-            </motion.h1>
-            
-            <motion.p 
-              className="hero__subtitle"
-              variants={{
-                hidden: { opacity: 0, y: 20 },
-                visible: { opacity: 1, y: 0, transition: { duration: 0.5 } }
-              }}
-            >
-              {SLIDES[currentIndex].subtitle}
-            </motion.p>
-            
+      <div className="hero__container">
+        
+        {/* Left Side: Text Content */}
+        <div className="hero__content-side">
+          <AnimatePresence mode="wait">
             <motion.div 
-              className="hero__actions"
+              key={currentIndex}
+              className="hero__text-content"
+              initial="hidden"
+              animate="visible"
+              exit="exit"
               variants={{
-                hidden: { opacity: 0, y: 20 },
-                visible: { opacity: 1, y: 0, transition: { duration: 0.5 } }
+                visible: { transition: { staggerChildren: 0.1 } },
+                hidden: {},
+                exit: { opacity: 0, transition: { duration: 0.2 } }
               }}
             >
-              <a href={SLIDES[currentIndex].ctaLink} className="hero__cta hero__cta--primary">
-                {SLIDES[currentIndex].ctaText}
-              </a>
-              <a href="/services" className="hero__cta hero__cta--secondary">View All Services</a>
+              <motion.span 
+                className="hero__label"
+                variants={{
+                  hidden: { opacity: 0, y: 15 },
+                  visible: { opacity: 1, y: 0, transition: { duration: 0.5 } }
+                }}
+              >
+                — {SLIDES[currentIndex].label}
+              </motion.span>
+              
+              <motion.h1 
+                className="hero__title"
+                variants={{
+                  hidden: { opacity: 0, y: 30 },
+                  visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
+                }}
+              >
+                {SLIDES[currentIndex].title.split('\n').map((line, i) => (
+                  <span key={i} className="hero__title-line">{line}</span>
+                ))}
+              </motion.h1>
+              
+              <motion.p 
+                className="hero__subtitle"
+                variants={{
+                  hidden: { opacity: 0, y: 20 },
+                  visible: { opacity: 1, y: 0, transition: { duration: 0.5, delay: 0.2 } }
+                }}
+              >
+                {SLIDES[currentIndex].subtitle}
+              </motion.p>
+              
+              <motion.div 
+                className="hero__actions"
+                variants={{
+                  hidden: { opacity: 0, y: 20 },
+                  visible: { opacity: 1, y: 0, transition: { duration: 0.5, delay: 0.3 } }
+                }}
+              >
+                <a href={SLIDES[currentIndex].ctaLink} className="hero__cta">
+                  <span>{SLIDES[currentIndex].ctaText}</span>
+                  <span className="hero__cta-icon"><ChevronRight size={18} /></span>
+                </a>
+              </motion.div>
             </motion.div>
-          </motion.div>
-        </AnimatePresence>
+          </AnimatePresence>
 
-        <ServiceRequestForm />
-
-        <motion.div 
-          className="hero__trust"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1, duration: 0.8 }}
-        >
-          <div className="hero__trust-item">
-            <strong>500+</strong>
-            <span>Projects Delivered</span>
+          {/* Controls */}
+          <div className="hero__controls">
+            <div className="hero__counter">
+              {String(currentIndex + 1).padStart(2, '0')} / {String(SLIDES.length).padStart(2, '0')}
+            </div>
+            <div className="hero__nav-arrows">
+              <button onClick={prevSlide} className="hero__nav-btn" aria-label="Previous Slide"><ArrowLeft size={20}/></button>
+              <button onClick={nextSlide} className="hero__nav-btn" aria-label="Next Slide"><ArrowRight size={20}/></button>
+            </div>
           </div>
-          <div className="hero__trust-divider" />
-          <div className="hero__trust-item">
-            <strong>50+</strong>
-            <span>Cities Covered</span>
+        </div>
+
+        {/* Right Side: Image */}
+        <div className="hero__image-side">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={currentIndex}
+              className="hero__image-wrapper"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.8 }}
+            >
+              <motion.img 
+                src={SLIDES[currentIndex].image} 
+                alt={SLIDES[currentIndex].title}
+                className="hero__image"
+                initial={{ scale: 1.0 }}
+                animate={{ scale: 1.05 }}
+                transition={{ duration: 6, ease: "linear" }}
+              />
+              <div className="hero__image-overlay"></div>
+            </motion.div>
+          </AnimatePresence>
+          
+          <div className="hero__progress-bar">
+            {SLIDES.map((_, idx) => (
+              <div key={idx} className={`hero__progress-dot ${idx === currentIndex ? 'active' : ''}`} />
+            ))}
           </div>
-          <div className="hero__trust-divider" />
-          <div className="hero__trust-item">
-            <strong>24/7</strong>
-            <span>Support Available</span>
-          </div>
-        </motion.div>
-      </div>
+        </div>
 
-      <div className="hero__nav hero__nav--prev" onClick={prevSlide}>
-        <ChevronLeft size={24} />
       </div>
-      <div className="hero__nav hero__nav--next" onClick={nextSlide}>
-        <ChevronRight size={24} />
-      </div>
-
-      <div className="hero__dots">
-        {SLIDES.map((_, idx) => (
-          <button
-            key={idx}
-            className={`hero__dot ${idx === currentIndex ? 'hero__dot--active' : ''}`}
-            onClick={() => setCurrentIndex(idx)}
-            aria-label={`Go to slide ${idx + 1}`}
-          />
-        ))}
-      </div>
-
-      <button className="hero__scroll" onClick={scrollToNext} aria-label="Scroll to next section">
-        <span className="hero__scroll-text">Scroll</span>
-        <span className="hero__scroll-icon">
-          <ChevronDown size={20} />
-        </span>
-      </button>
     </section>
   );
 };

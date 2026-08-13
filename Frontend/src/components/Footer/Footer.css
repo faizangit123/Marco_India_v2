@@ -3,8 +3,9 @@
    ============================================ */
 
 .footer {
-  background: var(--color-bg-secondary);
-  border-top: 1px solid var(--color-border);
+  background: var(--color-bg-dark);
+  color: #fff;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
   margin-top: auto;
 }
 
@@ -23,8 +24,8 @@
   gap: var(--spacing-sm);
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: 1.25rem;
-  color: var(--color-text-primary);
+  font-size: 1.5rem;
+  color: #fff;
   text-decoration: none;
   margin-bottom: var(--spacing-lg);
 }
@@ -35,17 +36,17 @@
   justify-content: center;
   width: 36px;
   height: 36px;
-  border-radius: var(--radius-md);
-  background: var(--gradient-primary);
+  border-radius: var(--radius-sm);
+  background: var(--color-accent);
   color: #fff;
   font-size: 1.1rem;
   font-weight: 800;
 }
 
 .footer__about {
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   line-height: 1.7;
-  color: var(--color-text-secondary);
+  color: rgba(255, 255, 255, 0.7);
   margin-bottom: var(--spacing-lg);
 }
 
@@ -61,25 +62,25 @@
   justify-content: center;
   width: 38px;
   height: 38px;
-  border-radius: var(--radius-full);
-  border: 1px solid var(--color-border);
-  color: var(--color-text-secondary);
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.7);
   transition: color var(--transition-fast), border-color var(--transition-fast), background var(--transition-fast), transform var(--transition-fast);
 }
 
 .footer__social-link:hover {
-  color: var(--color-accent);
+  color: #fff;
   border-color: var(--color-accent);
-  background: var(--color-accent-glow);
+  background: var(--color-accent);
   transform: translateY(-2px);
 }
 
 /* ---- Column Heading ---- */
 .footer__heading {
   font-family: var(--font-display);
-  font-size: 1rem;
+  font-size: 1.125rem;
   font-weight: 600;
-  color: var(--color-text-primary);
+  color: #fff;
   margin-bottom: var(--spacing-lg);
   position: relative;
   padding-bottom: var(--spacing-sm);
@@ -92,7 +93,7 @@
   left: 0;
   width: 30px;
   height: 2px;
-  background: var(--gradient-primary);
+  background: var(--color-accent);
   border-radius: 1px;
 }
 
@@ -108,7 +109,7 @@
   align-items: center;
   gap: var(--spacing-xs);
   font-size: 0.875rem;
-  color: var(--color-text-secondary);
+  color: rgba(255, 255, 255, 0.7);
   text-decoration: none;
   transition: color var(--transition-fast), transform var(--transition-fast);
 }
@@ -129,7 +130,7 @@
   display: flex;
   gap: var(--spacing-md);
   font-size: 0.875rem;
-  color: var(--color-text-secondary);
+  color: rgba(255, 255, 255, 0.7);
   line-height: 1.6;
 }
 
@@ -140,7 +141,7 @@
 }
 
 .footer__contact-link {
-  color: var(--color-text-secondary);
+  color: rgba(255, 255, 255, 0.7);
   text-decoration: none;
   transition: color var(--transition-fast);
 }
@@ -151,7 +152,7 @@
 
 /* ---- Bottom Bar ---- */
 .footer__bottom {
-  border-top: 1px solid var(--color-border);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
   padding: var(--spacing-lg) 0;
 }
 
@@ -163,8 +164,8 @@
 }
 
 .footer__copyright {
-  font-size: 0.8rem;
-  color: var(--color-text-muted);
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.5);
 }
 
 .footer__bottom-links {
@@ -174,8 +175,8 @@
 }
 
 .footer__bottom-link {
-  font-size: 0.8rem;
-  color: var(--color-text-muted);
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.5);
   text-decoration: none;
   transition: color var(--transition-fast);
 }
@@ -185,7 +186,7 @@
 }
 
 .footer__bottom-sep {
-  color: var(--color-border);
+  color: rgba(255, 255, 255, 0.2);
   font-size: 0.75rem;
 }
 
@@ -194,18 +195,19 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: var(--radius-full);
-  border: 1px solid var(--color-border);
-  color: var(--color-text-secondary);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  background: transparent;
   transition: color var(--transition-fast), border-color var(--transition-fast), background var(--transition-fast), transform var(--transition-fast);
 }
 
 .footer__scroll-top:hover {
-  color: var(--color-accent);
+  color: #fff;
   border-color: var(--color-accent);
-  background: var(--color-accent-glow);
+  background: var(--color-accent);
   transform: translateY(-2px);
 }
 

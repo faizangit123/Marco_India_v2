@@ -6,48 +6,52 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 
 /* ============================================
-   CSS Custom Properties (Dark Theme)
+   CSS Custom Properties (Warm Light Theme)
    ============================================ */
 :root {
-  /* Primary Colors */
-  --color-bg-primary: #0a0e1a;
-  --color-bg-secondary: #111827;
-  --color-bg-tertiary: #1a2035;
-  --color-bg-card: #111827;
-  --color-bg-card-hover: #1a2035;
+  /* Backgrounds */
+  --color-bg-primary: #FAFAF7;        /* warm off-white */
+  --color-bg-secondary: #F5F3EE;      /* slightly warmer */
+  --color-bg-tertiary: #EDEAE3;       /* warm gray */
+  --color-bg-card: #FFFFFF;
+  --color-bg-card-hover: #F9F8F5;
+  --color-bg-dark: #1A1A1A;           /* for dark sections */
+  --color-bg-hero: #0F0F0F;           /* hero section */
 
   /* Borders */
-  --color-border: #1e293b;
-  --color-border-hover: #334155;
+  --color-border: #E5E2DB;
+  --color-border-hover: #D1CCC3;
 
-  /* Accent */
-  --color-accent: #00d4ff;
-  --color-accent-hover: #00b8e6;
-  --color-accent-glow: rgba(0, 212, 255, 0.15);
-  --color-accent-secondary: #3b82f6;
+  /* Accent — Burnt Orange / Copper */
+  --color-accent: #C75B2B;            /* burnt orange */
+  --color-accent-hover: #B04E24;
+  --color-accent-glow: rgba(199, 91, 43, 0.1);
+  --color-accent-secondary: #D4845A;  /* lighter copper */
+  --color-accent-light: #F7E8DE;      /* very light accent bg */
 
   /* Text */
-  --color-text-primary: #f1f5f9;
-  --color-text-secondary: #94a3b8;
-  --color-text-muted: #64748b;
-  --color-text-accent: #00d4ff;
+  --color-text-primary: #1A1A1A;      /* near-black */
+  --color-text-secondary: #555555;    /* dark gray */
+  --color-text-muted: #888888;        /* medium gray */
+  --color-text-accent: #C75B2B;
+  --color-text-light: #FAFAF7;        /* for dark backgrounds */
 
   /* Status */
-  --color-success: #10b981;
-  --color-warning: #f59e0b;
-  --color-error: #ef4444;
+  --color-success: #2D7A4F;
+  --color-warning: #D4853A;
+  --color-error: #C43E3E;
 
   /* Gradients */
-  --gradient-primary: linear-gradient(135deg, #00d4ff, #3b82f6);
-  --gradient-dark: linear-gradient(180deg, #0a0e1a 0%, #111827 100%);
-  --gradient-card: linear-gradient(145deg, #111827, #0f1729);
-  --gradient-hero-overlay: linear-gradient(180deg, rgba(10, 14, 26, 0.7) 0%, rgba(10, 14, 26, 0.9) 100%);
+  --gradient-primary: linear-gradient(135deg, #C75B2B, #D4845A);
+  --gradient-dark: linear-gradient(180deg, #1A1A1A 0%, #0F0F0F 100%);
+  --gradient-card: linear-gradient(145deg, #FFFFFF, #F9F8F5);
+  --gradient-hero-overlay: linear-gradient(180deg, rgba(15, 15, 15, 0.4) 0%, rgba(15, 15, 15, 0.75) 100%);
 
-  /* Shadows */
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
-  --shadow-accent: 0 4px 20px rgba(0, 212, 255, 0.2);
+  /* Shadows — soft and light */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.08);
+  --shadow-accent: 0 4px 16px rgba(199, 91, 43, 0.15);
 
   /* Typography */
   --font-display: 'Space Grotesk', sans-serif;
@@ -62,22 +66,24 @@
   --spacing-2xl: 3rem;
   --spacing-3xl: 4rem;
   --spacing-4xl: 6rem;
+  --spacing-5xl: 8rem;
 
   /* Layout */
-  --max-width: 1280px;
-  --navbar-height: 72px;
+  --max-width: 1320px;
+  --navbar-height: 80px;
 
   /* Border Radius */
   --radius-sm: 4px;
   --radius-md: 8px;
   --radius-lg: 12px;
   --radius-xl: 16px;
+  --radius-2xl: 24px;
   --radius-full: 9999px;
 
   /* Transitions */
   --transition-fast: 150ms ease;
-  --transition-base: 250ms ease;
-  --transition-slow: 400ms ease;
+  --transition-base: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 500ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* ============================================
@@ -110,7 +116,7 @@ html {
 }
 
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: var(--font-body);
   background-color: var(--color-bg-primary);
   color: var(--color-text-primary);
   line-height: 1.6;
@@ -152,16 +158,11 @@ input, textarea, select {
   color: inherit;
 }
 
-input, textarea, select {
-  font-family: inherit;
-  color: inherit;
-}
-
 /* ============================================
    Visual Polish
    ============================================ */
 .button-hover {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all var(--transition-base);
 }
 .button-hover:hover {
   transform: translateY(-2px);
@@ -225,10 +226,10 @@ h1, h2, h3, h4, h5, h6 {
 
 @keyframes pulse-glow {
   0%, 100% {
-    box-shadow: 0 0 8px rgba(0, 212, 255, 0.3);
+    box-shadow: 0 0 8px var(--color-accent-glow);
   }
   50% {
-    box-shadow: 0 0 20px rgba(0, 212, 255, 0.6);
+    box-shadow: 0 0 20px rgba(199, 91, 43, 0.3);
   }
 }
 
@@ -256,6 +257,6 @@ h1, h2, h3, h4, h5, h6 {
    Selection
    ============================================ */
 ::selection {
-  background: rgba(0, 212, 255, 0.3);
-  color: var(--color-text-primary);
+  background: var(--color-accent-glow);
+  color: var(--color-accent);
 }
