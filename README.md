@@ -17,8 +17,8 @@ A modern, full-stack business website for **Marco India**, a professional CCTV s
 React + Vite (Frontend)
        ↓ Axios (JWT)
 Node.js + Express (Backend)
-       ↓ Prisma ORM
-PostgreSQL (Database)
+       ↓ `
+Mongodb (Database)
 ```
 
 ---
@@ -107,9 +107,9 @@ Marco_India_v2/
 
 ## 🛠️ Tech Stack
 
-| Category          | Technology                                     |
+| Category          | Technology                                      |
 |-------------------|-------------------------------------------------|
-| **Frontend**      | React 19, Vite 7, Framer Motion                |
+| **Frontend**      | React 19, Vite 7, Framer Motion                 |
 | **Styling**       | CSS + Custom Design System                      |
 | **Routing**       | React Router DOM v7                             |
 | **HTTP Client**   | Axios (JWT interceptor + auto-refresh)          |
@@ -228,7 +228,7 @@ JWT-based authentication with automatic token refresh:
 
 ---
 
-## 📞 Contact
+## 📞 Contact : 
 
 **Marco India**  
 📍 ROAD no-8 Jawahar Nagar Mango Jamshedpur, Jharkhand-831012, India  

@@ -88,6 +88,7 @@ const App = () => (
           <Route path="settings" element={<Settings />} />
         </Route>
 
+        {/*Not found route*/}
         <Route path="*" element={<NotFound />} />
       </Routes>
       <CTABanner />

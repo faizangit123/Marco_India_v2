@@ -52,7 +52,8 @@
   font-weight: 500;
   color: var(--color-text-secondary);
   border-radius: var(--radius-md);
-  transition: color var(--transition-fast), background var(--transition-fast);
+  transition: color var(--transition-fast), 
+  background var(--transition-fast);
   text-decoration: none;
 }
 
