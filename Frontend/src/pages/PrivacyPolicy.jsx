@@ -123,7 +123,7 @@ const PrivacyPolicy = () => {
             </p>
             <p>
               Email: <a href="mailto:marcoindia@gmail.com">marcoindia@gmail.com</a><br />
-              Phone: <a href="tel:+919315501070">+91 9315501070</a>
+              Phone: <a href="tel:+919315501070">+91 9315501070</a> / <a href="tel:+918092099110">+91 8092099110</a>
             </p>
           </div>
         </div>
