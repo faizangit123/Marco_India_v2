@@ -2,9 +2,14 @@ import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
 
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const createStorage = (folder) => multer.diskStorage({
   destination: (req, file, cb) => {
-    const dir = path.join(process.cwd(), 'uploads', folder);
+    const dir = path.join(__dirname, '../../uploads', folder);
     fs.mkdirSync(dir, { recursive: true });
     cb(null, dir);
   },
@@ -15,8 +20,12 @@ const createStorage = (folder) => multer.diskStorage({
 });
 
 const fileFilter = (req, file, cb) => {
+  // If file exists, accept standard images
+  if (!file) {
+    return cb(null, true);
+  }
   const isImageMime = file.mimetype && file.mimetype.startsWith('image/');
-  const isImageExt = /\.(jpg|jpeg|png|webp|gif|svg|avif|heic|bmp|tiff)$/i.test(file.originalname);
+  const isImageExt = /\.(jpg|jpeg|png|webp|gif|svg|avif|heic|bmp|tiff)$/i.test(file.originalname || '');
   if (isImageMime || isImageExt) {
     cb(null, true);
   } else {
