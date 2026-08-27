@@ -50,6 +50,11 @@ const getTransporter = () => {
 export const sendEmailMessage = async ({ to, subject, text, html }) => {
   // 1. Primary Cloud Option: Resend HTTPS API (Port 443)
   if (process.env.RESEND_API_KEY) {
+    // Resend requires onboarding@resend.dev unless you have verified your own custom domain (e.g. marcoindia.in)
+    const configuredFrom = process.env.EMAIL_FROM || '';
+    const hasUnverifiedFreeDomain = configuredFrom.includes('@gmail.com') || configuredFrom.includes('@yahoo.com') || configuredFrom.includes('@outlook.com') || configuredFrom.includes('@hotmail.com');
+    const fromAddr = (configuredFrom && !hasUnverifiedFreeDomain) ? configuredFrom : 'Marco India <onboarding@resend.dev>';
+
     const toList = Array.isArray(to) ? to : [to];
     const res = await fetch('https://api.resend.com/emails', {
       method: 'POST',
@@ -58,7 +63,7 @@ export const sendEmailMessage = async ({ to, subject, text, html }) => {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        from: process.env.EMAIL_FROM || 'Marco India <onboarding@resend.dev>',
+        from: fromAddr,
         to: toList,
         subject: subject,
         text: text,
