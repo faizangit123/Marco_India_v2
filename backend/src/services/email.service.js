@@ -11,28 +11,36 @@ const getTransporter = () => {
   if (!transporter && isEmailConfigured()) {
     const cleanPassword = (config.email.password || '').replace(/\s+/g, '');
     const isGmail = (config.email.host && config.email.host.includes('gmail')) || 
+                    (config.email.user && config.email.user.includes('@gmail.com')) ||
                     (process.env.EMAIL_SERVICE && process.env.EMAIL_SERVICE.toLowerCase() === 'gmail');
 
     if (isGmail) {
+      // Direct SSL on port 465 (bypasses Render/cloud outbound port 587 timeouts)
       transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-          user: config.email.user,
-          pass: cleanPassword
-        }
-      });
-    } else {
-      transporter = nodemailer.createTransport({
-        host: config.email.host,
-        port: Number(config.email.port) || 587,
-        secure: Number(config.email.port) === 465,
+        host: 'smtp.gmail.com',
+        port: 465,
+        secure: true,
         auth: {
           user: config.email.user,
           pass: cleanPassword
         },
-        connectionTimeout: 10000,
-        greetingTimeout: 10000,
-        socketTimeout: 15000
+        connectionTimeout: 15000,
+        greetingTimeout: 15000,
+        socketTimeout: 20000
+      });
+    } else {
+      const port = Number(config.email.port) || 465;
+      transporter = nodemailer.createTransport({
+        host: config.email.host,
+        port: port,
+        secure: port === 465,
+        auth: {
+          user: config.email.user,
+          pass: cleanPassword
+        },
+        connectionTimeout: 15000,
+        greetingTimeout: 15000,
+        socketTimeout: 20000
       });
     }
   }
