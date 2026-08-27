@@ -154,7 +154,15 @@ const Gallery = () => {
             <div className="gallery-page__grid">
               {filtered.map((project, i) => (
                 <div key={project.id || i} className="gallery-page__item" onClick={() => setLightbox(project)}>
-                  <img src={project.image || project.src} alt={project.title} className="gallery-page__img" loading="lazy" />
+                  <img 
+                    src={project.image || project.src} 
+                    alt={project.title} 
+                    className="gallery-page__img" 
+                    loading="lazy" 
+                    onError={(e) => {
+                      e.target.src = 'https://images.unsplash.com/photo-1557597774-9d273605dfa9?w=800&q=80';
+                    }}
+                  />
                   <div className="gallery-page__item-overlay">
                     <ZoomIn size={24} />
                     <span className="gallery-page__item-title">{project.title}</span>

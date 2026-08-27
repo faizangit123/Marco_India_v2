@@ -43,16 +43,32 @@ export const adminList = async (req, res, next) => {
 
 export const create = async (req, res, next) => {
   try {
-    const { title, description, category, location, is_featured } = req.body;
-    if (!req.file) return res.status(400).json({ detail: 'Image is required' });
+    const { title, description, category, location, is_featured, image_url, image: rawImage } = req.body;
+    
+    if (!title || !title.trim()) {
+      return res.status(400).json({ detail: 'Project title is required.' });
+    }
+
+    let imagePath = '';
+    if (req.file) {
+      imagePath = `/uploads/gallery/${req.file.filename}`;
+    } else if (image_url && image_url.trim()) {
+      imagePath = image_url.trim();
+    } else if (rawImage && typeof rawImage === 'string' && rawImage.trim()) {
+      imagePath = rawImage.trim();
+    }
+
+    if (!imagePath) {
+      return res.status(400).json({ detail: 'Please select an image file or provide an image URL.' });
+    }
 
     const item = await GalleryItem.create({
-      title,
-      description,
-      category,
-      location,
+      title: title.trim(),
+      description: description ? description.trim() : '',
+      category: category || 'CCTV',
+      location: location ? location.trim() : '',
       isFeatured: is_featured === 'true' || is_featured === true,
-      image: `/uploads/gallery/${req.file.filename}`
+      image: imagePath
     });
 
     res.status(201).json(formatItem(item));

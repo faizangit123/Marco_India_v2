@@ -165,7 +165,15 @@ const GallerySection = () => {
                   visible: { opacity: 1, scale: 1, transition: { duration: 0.5 } }
                 }}
               >
-                <img src={project.image || project.src} alt={project.title} className="gallery__img" loading="lazy" />
+                <img 
+                  src={project.image || project.src} 
+                  alt={project.title} 
+                  className="gallery__img" 
+                  loading="lazy" 
+                  onError={(e) => {
+                    e.target.src = 'https://images.unsplash.com/photo-1557597774-9d273605dfa9?w=800&q=80';
+                  }}
+                />
                 <div className="gallery__item-overlay">
                   <ZoomIn size={24} />
                   <span className="gallery__item-title">{project.title}</span>

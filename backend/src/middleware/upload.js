@@ -15,14 +15,16 @@ const createStorage = (folder) => multer.diskStorage({
 });
 
 const fileFilter = (req, file, cb) => {
-  if (file.mimetype.startsWith('image/')) {
+  const isImageMime = file.mimetype && file.mimetype.startsWith('image/');
+  const isImageExt = /\.(jpg|jpeg|png|webp|gif|svg|avif|heic|bmp|tiff)$/i.test(file.originalname);
+  if (isImageMime || isImageExt) {
     cb(null, true);
   } else {
-    cb(new Error('Only image files are allowed!'), false);
+    cb(new Error('Only image files (JPG, PNG, WebP, GIF, SVG, AVIF, etc.) are allowed!'), false);
   }
 };
 
-const limits = { fileSize: 5 * 1024 * 1024 };
+const limits = { fileSize: 10 * 1024 * 1024 }; // 10MB limit
 
 export const uploadAvatar = multer({ storage: createStorage('avatars'), fileFilter, limits });
 export const uploadGallery = multer({ storage: createStorage('gallery'), fileFilter, limits });
