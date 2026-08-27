@@ -1,5 +1,5 @@
 import ContactMessage from '../models/ContactMessage.js';
-import { sendContactNotification } from '../services/email.service.js';
+import { sendContactNotification, sendContactConfirmation } from '../services/email.service.js';
 
 const formatContact = (c) => ({
   id: c.id,
@@ -23,6 +23,9 @@ export const create = async (req, res, next) => {
     });
 
     sendContactNotification(contact).catch(console.error);
+    if (contact.email) {
+      sendContactConfirmation(contact).catch(console.error);
+    }
 
     res.status(201).json(formatContact(contact));
   } catch (error) {
