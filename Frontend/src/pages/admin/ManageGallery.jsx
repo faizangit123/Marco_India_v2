@@ -4,6 +4,13 @@ import apiClient from '../../api/client';
 
 const CATEGORIES = ['CCTV', 'Telecom', 'Signal Boosting', 'Networking', 'Fiber Optic', 'Other'];
 
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+
+const formatImageUrl = (url) => {
+  if (!url) return '';
+  return url.startsWith('http') ? url : `${API_BASE}${url}`;
+};
+
 const ManageGallery = () => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -17,7 +24,8 @@ const ManageGallery = () => {
     const fetch = async () => {
       try {
         const { data } = await apiClient.get('/api/gallery/admin/');
-        setItems(Array.isArray(data) ? data : data.results || []);
+        const list = Array.isArray(data) ? data : data.results || [];
+        setItems(list.map(i => ({ ...i, image: formatImageUrl(i.image || i.src) })));
         if (data.active !== undefined) setGalleryActive(data.active);
       } catch {
         setError('Unable to load gallery items.');
@@ -48,7 +56,7 @@ const ManageGallery = () => {
       fd.append('category', form.category);
       fd.append('description', form.description.trim());
       const { data } = await apiClient.post('/api/gallery/upload/', fd);
-      setItems((prev) => [data, ...prev]);
+      setItems((prev) => [{ ...data, image: formatImageUrl(data.image) }, ...prev]);
       setForm({ title: '', location: '', category: 'CCTV', description: '' });
       if (fileRef.current) fileRef.current.value = '';
     } catch { /* silent */ }

@@ -103,11 +103,12 @@
 .comments__login-prompt {
   padding: var(--spacing-lg);
   text-align: center;
-  background: rgba(17, 24, 39, 0.5);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
+  background: var(--color-bg-card, #FFFFFF);
+  border: 1px solid var(--color-border, #E5E2DB);
+  border-radius: var(--radius-lg, 12px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   font-size: 0.9rem;
-  color: var(--color-text-secondary);
+  color: var(--color-text-secondary, #555555);
   margin-bottom: var(--spacing-xl);
 }
 
@@ -117,7 +118,7 @@
 .comments__empty {
   text-align: center;
   padding: var(--spacing-xl);
-  color: var(--color-text-muted);
+  color: var(--color-text-muted, #888888);
   font-size: 0.9rem;
   display: flex;
   align-items: center;
@@ -134,21 +135,23 @@
 .comments__item {
   display: flex;
   gap: var(--spacing-md);
-  padding: var(--spacing-md);
-  background: rgba(10, 14, 26, 0.4);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
+  padding: var(--spacing-md) var(--spacing-lg);
+  background: var(--color-bg-card, #FFFFFF);
+  border: 1px solid var(--color-border, #E5E2DB);
+  border-radius: var(--radius-lg, 12px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
 }
 
 .comments__item-avatar {
-  width: 36px;
-  height: 36px;
+  width: 38px;
+  height: 38px;
   border-radius: var(--radius-full);
-  background: var(--color-bg-tertiary);
+  background: var(--color-accent-light, #F7E8DE);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--color-text-muted);
+  color: var(--color-accent, #C75B2B);
+  font-weight: 700;
   flex-shrink: 0;
 }
 
@@ -166,17 +169,19 @@
 }
 
 .comments__item-header strong {
-  font-size: 0.85rem;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--color-text-primary, #1A1A1A);
 }
 
 .comments__item-header span {
-  font-size: 0.72rem;
-  color: var(--color-text-muted);
+  font-size: 0.75rem;
+  color: var(--color-text-muted, #888888);
 }
 
 .comments__item-text {
-  font-size: 0.875rem;
-  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+  color: var(--color-text-primary, #1A1A1A);
   line-height: 1.6;
   word-break: break-word;
 }

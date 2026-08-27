@@ -149,20 +149,20 @@ const ManageContacts = () => {
                       </tr>
                       {expandedId === m.id && (
                         <tr key={`${m.id}-detail`}>
-                          <td colSpan={7} style={{ padding: 'var(--spacing-md) var(--spacing-lg)', background: 'rgba(17, 24, 39, 0.5)' }}>
+                          <td colSpan={7} style={{ padding: 'var(--spacing-md) var(--spacing-lg)', background: '#FAF8F5', borderBottom: '1px solid #E5E2DB' }}>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-md)' }}>
                               <div>
-                                <strong style={{ fontSize: '0.82rem', color: 'var(--color-text-secondary)' }}>Message:</strong>
-                                <p style={{ marginTop: 4, fontSize: '0.875rem', color: 'var(--color-text-primary)', lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>
+                                <strong style={{ fontSize: '0.85rem', color: 'var(--color-text-primary, #1A1A1A)' }}>Message Content:</strong>
+                                <p style={{ marginTop: 6, fontSize: '0.9rem', color: 'var(--color-text-primary, #1A1A1A)', lineHeight: 1.6, whiteSpace: 'pre-wrap', background: '#FFFFFF', padding: '12px 16px', borderRadius: '8px', border: '1px solid #E5E2DB' }}>
                                   {m.message}
                                 </p>
                               </div>
                               <div>
-                                <strong style={{ fontSize: '0.82rem', color: 'var(--color-text-secondary)' }}>Admin Notes:</strong>
+                                <strong style={{ fontSize: '0.85rem', color: 'var(--color-text-primary, #1A1A1A)' }}>Admin Notes:</strong>
                                 <div style={{ display: 'flex', gap: 'var(--spacing-sm)', marginTop: 4 }}>
                                   <textarea
                                     className="admin-search"
-                                    style={{ marginBottom: 0, flex: 1, minHeight: 60, resize: 'vertical', maxWidth: 'none' }}
+                                    style={{ marginBottom: 0, flex: 1, minHeight: 60, resize: 'vertical', maxWidth: 'none', background: '#FFFFFF' }}
                                     placeholder="Add internal notes..."
                                     value={notesMap[m.id] || ''}
                                     onChange={e => setNotesMap(p => ({ ...p, [m.id]: e.target.value }))}
@@ -171,9 +171,9 @@ const ManageContacts = () => {
                                     onClick={() => handleSaveNotes(m.id)}>Save</button>
                                 </div>
                               </div>
-                              <div style={{ display: 'flex', gap: 'var(--spacing-md)', fontSize: '0.82rem', color: 'var(--color-text-muted)' }}>
-                                <span><Mail size={12} style={{ marginRight: 4 }} /><a href={`mailto:${m.email}`} style={{ color: 'var(--color-accent)' }}>{m.email}</a></span>
-                                {m.phone && <span><Phone size={12} style={{ marginRight: 4 }} /><a href={`tel:${m.phone}`} style={{ color: 'var(--color-accent)' }}>{m.phone}</a></span>}
+                              <div style={{ display: 'flex', gap: 'var(--spacing-lg)', fontSize: '0.85rem', color: 'var(--color-text-secondary, #555555)', paddingTop: 4 }}>
+                                <span><Mail size={14} style={{ marginRight: 6, verticalAlign: 'middle' }} /><a href={`mailto:${m.email}`} style={{ color: 'var(--color-accent, #C75B2B)', fontWeight: 600, textDecoration: 'none' }}>{m.email}</a></span>
+                                {m.phone && <span><Phone size={14} style={{ marginRight: 6, verticalAlign: 'middle' }} /><a href={`tel:${m.phone}`} style={{ color: 'var(--color-accent, #C75B2B)', fontWeight: 600, textDecoration: 'none' }}>{m.phone}</a></span>}
                               </div>
                             </div>
                           </td>

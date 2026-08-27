@@ -297,10 +297,10 @@
 
 .contact-socials__title {
   font-family: var(--font-display);
-  font-size: 1.1rem;
-  font-weight: 600;
+  font-size: 1.15rem;
+  font-weight: 700;
   margin-bottom: var(--spacing-lg);
-  color: var(--color-text-secondary);
+  color: var(--color-text-primary, #1A1A1A);
 }
 
 .contact-socials__links {
@@ -311,22 +311,25 @@
 }
 
 .contact-socials__link {
-  width: 44px;
-  height: 44px;
+  width: 46px;
+  height: 46px;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: var(--radius-full);
-  border: 1px solid var(--color-border);
-  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border, #E5E2DB);
+  background: var(--color-bg-card, #FFFFFF);
+  color: var(--color-text-primary, #1A1A1A);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   transition: all var(--transition-base);
 }
 
 .contact-socials__link:hover {
-  color: var(--color-accent);
-  border-color: var(--color-accent);
-  background: var(--color-accent-light);
+  color: #FFFFFF;
+  border-color: var(--color-accent, #C75B2B);
+  background: var(--color-accent, #C75B2B);
   transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(199, 91, 43, 0.3);
 }
 
 /* ============================================

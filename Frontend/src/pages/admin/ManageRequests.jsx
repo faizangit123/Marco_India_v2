@@ -128,12 +128,12 @@ const ManageRequests = () => {
                       </tr>
                       {expandedId === r.id && (
                         <tr key={`${r.id}-notes`}>
-                          <td colSpan={6} style={{ padding: 'var(--spacing-md) var(--spacing-lg)', background: 'rgba(17, 24, 39, 0.5)' }}>
-                            <strong style={{ fontSize: '0.82rem', color: 'var(--color-text-secondary)' }}>Admin Notes:</strong>
-                            <div style={{ display: 'flex', gap: 'var(--spacing-sm)', marginTop: 4 }}>
+                          <td colSpan={6} style={{ padding: 'var(--spacing-md) var(--spacing-lg)', background: '#FAF8F5', borderBottom: '1px solid #E5E2DB' }}>
+                            <strong style={{ fontSize: '0.85rem', color: 'var(--color-text-primary, #1A1A1A)', display: 'block', marginBottom: 6 }}>Admin Notes:</strong>
+                            <div style={{ display: 'flex', gap: 'var(--spacing-sm)' }}>
                               <textarea
                                 className="admin-search"
-                                style={{ marginBottom: 0, flex: 1, minHeight: 60, resize: 'vertical', maxWidth: 'none' }}
+                                style={{ marginBottom: 0, flex: 1, minHeight: 60, resize: 'vertical', maxWidth: 'none', background: '#FFFFFF' }}
                                 placeholder="Add internal notes about this inquiry..."
                                 value={notesMap[r.id] || ''}
                                 onChange={e => setNotesMap(p => ({ ...p, [r.id]: e.target.value }))}
@@ -142,8 +142,8 @@ const ManageRequests = () => {
                                 onClick={() => handleSaveNotes(r.id)}>Save</button>
                             </div>
                             {r.user_email && (
-                              <p style={{ marginTop: 8, fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>
-                                Submitted by: {r.user_email}
+                              <p style={{ marginTop: 8, fontSize: '0.82rem', color: 'var(--color-text-secondary, #555555)' }}>
+                                Submitted by: <strong>{r.user_email}</strong>
                               </p>
                             )}
                           </td>

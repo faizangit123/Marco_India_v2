@@ -147,10 +147,10 @@ const Analytics = () => {
           <div className="dashboard-chart-card__body">
             <ResponsiveContainer width="100%" height={250}>
               <BarChart data={stats.chart_data}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                <XAxis dataKey="month" stroke="hsl(var(--muted-foreground))" fontSize={12} />
-                <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} />
-                <Tooltip contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '8px', color: 'hsl(var(--foreground))' }} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#E5E2DB" />
+                <XAxis dataKey="month" stroke="#1A1A1A" fontSize={12} />
+                <YAxis stroke="#1A1A1A" fontSize={12} />
+                <Tooltip contentStyle={{ backgroundColor: '#FFFFFF', border: '1px solid #E5E2DB', borderRadius: '8px', color: '#1A1A1A', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }} />
                 <Bar dataKey="inquiries" fill="#C75B2B" name="Inquiries" radius={[4,4,0,0]} />
                 <Bar dataKey="contacts" fill="#6366f1" name="Contacts" radius={[4,4,0,0]} />
                 <Bar dataKey="users" fill="#22c55e" name="New Users" radius={[4,4,0,0]} />
@@ -175,7 +175,7 @@ const Analytics = () => {
                         <Cell key={index} fill={entry.color} />
                       ))}
                     </Pie>
-                    <Tooltip contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '8px', color: 'hsl(var(--foreground))' }} />
+                    <Tooltip contentStyle={{ backgroundColor: '#FFFFFF', border: '1px solid #E5E2DB', borderRadius: '8px', color: '#1A1A1A', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }} />
                   </PieChart>
                 </ResponsiveContainer>
               </div>

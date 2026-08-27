@@ -6,11 +6,58 @@ import './GallerySection.css';
 
 const CATEGORIES = ['All', 'CCTV', 'Telecom', 'Signal Boosting', 'Networking', 'Fiber Optic', 'Other'];
 
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+
+const DEFAULT_PROJECTS = [
+  {
+    id: 'def-1',
+    title: 'Commercial Complex HD CCTV Surveillance',
+    category: 'CCTV',
+    location: 'Jamshedpur, Jharkhand',
+    image: 'https://images.unsplash.com/photo-1557597774-9d273605dfa9?w=800&q=80'
+  },
+  {
+    id: 'def-2',
+    title: 'Enterprise Server Rack & Structured Cabling',
+    category: 'Networking',
+    location: 'Ranchi, Jharkhand',
+    image: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&q=80'
+  },
+  {
+    id: 'def-3',
+    title: 'Industrial Optical Fiber Backbone Deployment',
+    category: 'Fiber Optic',
+    location: 'Bokaro Steel City, Jharkhand',
+    image: 'https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=800&q=80'
+  },
+  {
+    id: 'def-4',
+    title: 'Multi-Band Cellular Signal Booster System',
+    category: 'Signal Boosting',
+    location: 'Dhanbad, Jharkhand',
+    image: 'https://images.unsplash.com/photo-1516044734145-07ca8eef8731?w=800&q=80'
+  },
+  {
+    id: 'def-5',
+    title: 'Telecom Tower RF Alignment & Maintenance',
+    category: 'Telecom',
+    location: 'Patna, Bihar',
+    image: 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=800&q=80'
+  },
+  {
+    id: 'def-6',
+    title: 'Comprehensive IT Infrastructure AMC Support',
+    category: 'Other',
+    location: 'Kolkata, West Bengal',
+    image: 'https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=800&q=80'
+  }
+];
+
 const GallerySection = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [activeFilter, setActiveFilter] = useState('All');
   const [lightbox, setLightbox] = useState(null);
-  const [projects, setProjects] = useState([]);
+  const [projects, setProjects] = useState(DEFAULT_PROJECTS);
   const [loading, setLoading] = useState(true);
   const [galleryActive, setGalleryActive] = useState(true);
   const sectionRef = useRef(null);
@@ -38,9 +85,19 @@ const GallerySection = () => {
           return;
         }
         const items = Array.isArray(data) ? data : data.results || [];
-        setProjects(items);
+        if (items.length > 0) {
+          const fixed = items.map(item => ({
+            ...item,
+            image: item.image && !item.image.startsWith('http')
+              ? `${API_BASE}${item.image}`
+              : item.image
+          }));
+          setProjects(fixed);
+        } else {
+          setProjects(DEFAULT_PROJECTS);
+        }
       } catch {
-        setGalleryActive(false);
+        setProjects(DEFAULT_PROJECTS);
       } finally {
         setLoading(false);
       }
@@ -53,7 +110,7 @@ const GallerySection = () => {
     return () => { document.body.style.overflow = ''; };
   }, [lightbox]);
 
-  if (!galleryActive || (!loading && projects.length === 0)) return null;
+  if (!galleryActive) return null;
 
   const filtered = activeFilter === 'All'
     ? projects
