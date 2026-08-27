@@ -41,12 +41,14 @@ import Settings from "./pages/admin/Settings";
 import Notifications from "./pages/admin/Notifications";
 
 import ScrollToTop from "./components/ScrollToTop/ScrollToTop";
+import SmoothScroll from "./components/SmoothScroll/SmoothScroll";
 
 const App = () => (
   <BrowserRouter>
     <AuthProvider>
-      <Navbar />
-      <Routes>
+      <SmoothScroll>
+        <Navbar />
+        <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/services" element={<Services />} />
@@ -91,9 +93,10 @@ const App = () => (
         {/*Not found route*/}
         <Route path="*" element={<NotFound />} />
       </Routes>
-      <CTABanner />
-      <Footer />
-      <ScrollToTop />
+        <CTABanner />
+        <Footer />
+        <ScrollToTop />
+      </SmoothScroll>
     </AuthProvider>
   </BrowserRouter>
 );
