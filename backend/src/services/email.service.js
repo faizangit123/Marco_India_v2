@@ -50,30 +50,47 @@ const getTransporter = () => {
 export const sendEmailMessage = async ({ to, subject, text, html }) => {
   // 1. Primary Cloud Option: Resend HTTPS API (Port 443)
   if (process.env.RESEND_API_KEY) {
-    // Resend requires onboarding@resend.dev on free sandbox accounts
     const fromAddr = process.env.RESEND_FROM || 'onboarding@resend.dev';
-
     const toList = Array.isArray(to) ? to : [to];
-    const res = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        from: fromAddr,
-        to: toList,
-        subject: subject,
-        text: text,
-        html: html
+
+    // Dispatch to each recipient individually so sandbox restrictions never block other recipients
+    const results = await Promise.allSettled(
+      toList.map(async (recipient) => {
+        const res = await fetch('https://api.resend.com/emails', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            from: fromAddr,
+            to: [recipient],
+            subject: subject,
+            text: text,
+            html: html
+          })
+        });
+        
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(`[${recipient}] ${data.message || JSON.stringify(data)}`);
+        }
+        return { recipient, id: data.id };
       })
-    });
-    
-    const data = await res.json();
-    if (!res.ok) {
-      throw new Error(data.message || JSON.stringify(data));
+    );
+
+    const successful = results.filter(r => r.status === 'fulfilled').map(r => r.value);
+    const failed = results.filter(r => r.status === 'rejected').map(r => r.reason.message);
+
+    if (failed.length > 0) {
+      console.warn('[EmailService] Sandbox notice for unverified recipients:', failed.join('; '));
     }
-    return { success: true, provider: 'resend', id: data.id };
+
+    if (successful.length === 0 && failed.length > 0) {
+      throw new Error(failed[0]);
+    }
+
+    return { success: true, provider: 'resend', delivered: successful, failed };
   }
 
   // 2. SMTP Transport
