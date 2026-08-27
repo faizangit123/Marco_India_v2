@@ -4,13 +4,14 @@ const connectDB = async () => {
   try {
     const uri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/marco_india';
     if (!process.env.MONGODB_URI) {
-      console.log('⚠️ MONGODB_URI not found in .env, falling back to local mongodb://127.0.0.1:27017/marco_india');
+      console.log('⚠️ MONGODB_URI not found in environment, falling back to local mongodb://127.0.0.1:27017/marco_india');
     }
-    const conn = await mongoose.connect(uri);
-    console.log(`MongoDB Connected: ${conn.connection.host}`);
+    const conn = await mongoose.connect(uri, {
+      serverSelectionTimeoutMS: 8000,
+    });
+    console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
   } catch (error) {
-    console.error(`MongoDB connection error: ${error.message}`);
-    process.exit(1);
+    console.error(`❌ MongoDB connection error: ${error.message}`);
   }
 };
 

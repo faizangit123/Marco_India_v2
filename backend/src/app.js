@@ -41,7 +41,15 @@ app.use(generalLimiter);
 
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
+app.get('/', (req, res) => {
+  res.status(200).json({ name: 'Marco India API', status: 'online', timestamp: new Date().toISOString() });
+});
+
 app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok' });
+});
+
+app.get('/api/health', (req, res) => {
   res.status(200).json({ status: 'ok' });
 });
 
