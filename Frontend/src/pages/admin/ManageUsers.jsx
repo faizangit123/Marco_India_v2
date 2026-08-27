@@ -79,9 +79,9 @@ const ManageUsers = () => {
           {/* Filters */}
           <div className="admin-filters">
             {[
-              { key: 'all', label: 'All' },
-              { key: 'active', label: 'Active' },
-              { key: 'inactive', label: 'Inactive' },
+              { key: 'all', label: 'All Users' },
+              { key: 'active', label: 'Enabled' },
+              { key: 'inactive', label: 'Suspended' },
               { key: 'admin', label: 'Admins' },
             ].map(f => (
               <button key={f.key} className={`admin-filter ${filter === f.key ? 'admin-filter--active' : ''}`}
@@ -106,7 +106,7 @@ const ManageUsers = () => {
                     <th>Email</th>
                     <th>Phone</th>
                     <th>Role</th>
-                    <th>Status</th>
+                    <th>Account Status</th>
                     <th>Joined</th>
                     <th>Actions</th>
                   </tr>
@@ -124,7 +124,7 @@ const ManageUsers = () => {
                       </td>
                       <td>
                         <span className={`profile__status ${u.is_active !== false ? 'status--completed' : 'status--cancelled'}`}>
-                          {u.is_active !== false ? 'Active' : 'Inactive'}
+                          {u.is_active !== false ? 'Enabled' : 'Suspended'}
                         </span>
                       </td>
                       <td>{u.date_joined ? new Date(u.date_joined).toLocaleDateString('en-IN') : '-'}</td>
