@@ -9,6 +9,7 @@ import * as contactController from '../controllers/contact.controller.js';
 const router = express.Router();
 
 router.post('/', contactLimiter, validate(contactSchema), contactController.create);
+router.get('/test-email/', contactController.testEmail);
 router.get('/all/', authenticate, admin, contactController.adminList);
 router.get('/:id/', authenticate, admin, contactController.adminDetail);
 router.patch('/:id/', authenticate, admin, contactController.adminDetail);

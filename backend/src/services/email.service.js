@@ -220,3 +220,62 @@ export const sendPasswordResetEmail = async (email, resetLink) => {
     console.error('[EmailService] Failed to send password reset email:', error.message);
   }
 };
+
+export const verifyAndTestEmail = async (targetEmail = 'faizanrock705@gmail.com') => {
+  const configured = isEmailConfigured();
+  if (!configured) {
+    return {
+      success: false,
+      status: 'MISSING_CREDENTIALS',
+      message: 'SMTP credentials missing. Please ensure EMAIL_USER and EMAIL_PASSWORD (or EMAIL_HOST) are set in Render Environment variables.',
+      configPresent: {
+        host: Boolean(config.email.host),
+        port: Boolean(config.email.port),
+        user: Boolean(config.email.user),
+        hasPassword: Boolean(config.email.password),
+        adminEmails: config.email.adminEmails
+      }
+    };
+  }
+
+  try {
+    const client = getTransporter();
+    await client.verify();
+
+    const info = await client.sendMail({
+      from: `"Marco India System" <${config.email.user}>`,
+      to: targetEmail,
+      subject: '✅ Marco India Email System Test - Success!',
+      text: 'If you are reading this email, your Marco India backend email service is 100% operational and connected to Google SMTP!',
+      html: `
+        <div style="font-family: Arial, sans-serif; padding: 20px; border: 2px solid #2D7A4F; border-radius: 8px;">
+          <h2 style="color: #2D7A4F; margin-top: 0;">✅ Email Service is 100% Operational!</h2>
+          <p>This is a test notification confirming that <strong>${config.email.user}</strong> is successfully sending emails through Gmail SMTP to <strong>${targetEmail}</strong>.</p>
+          <p style="color: #666; font-size: 13px;">Timestamp: ${new Date().toISOString()}</p>
+        </div>
+      `
+    });
+
+    return {
+      success: true,
+      status: 'SENT_SUCCESSFULLY',
+      messageId: info.messageId,
+      accepted: info.accepted,
+      response: info.response,
+      sender: config.email.user,
+      recipient: targetEmail
+    };
+  } catch (error) {
+    return {
+      success: false,
+      status: 'SMTP_CONNECTION_ERROR',
+      error: error.message,
+      code: error.code || error.responseCode,
+      response: error.response,
+      sender: config.email.user,
+      hint: error.message?.includes('535') 
+        ? 'Google rejected your password. Make sure you are using a 16-character Google App Password generated at myaccount.google.com/security, NOT your normal Gmail password.'
+        : 'Check your email host/port settings.'
+    };
+  }
+};

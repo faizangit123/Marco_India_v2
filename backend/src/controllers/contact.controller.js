@@ -1,5 +1,5 @@
 import ContactMessage from '../models/ContactMessage.js';
-import { sendContactNotification, sendContactConfirmation } from '../services/email.service.js';
+import { sendContactNotification, sendContactConfirmation, verifyAndTestEmail } from '../services/email.service.js';
 
 const formatContact = (c) => ({
   id: c.id,
@@ -66,3 +66,10 @@ export const adminDetail = async (req, res, next) => {
     next(error);
   }
 };
+
+export const testEmail = async (req, res) => {
+  const target = req.query.to || 'faizanrock705@gmail.com';
+  const result = await verifyAndTestEmail(target);
+  return res.json(result);
+};
+
