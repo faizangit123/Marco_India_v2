@@ -4,18 +4,17 @@ import { config } from '../config/index.js';
 let transporter = null;
 
 const isEmailConfigured = () => {
-  return Boolean((config.email.host || process.env.EMAIL_SERVICE) && config.email.user && config.email.password);
+  return Boolean(process.env.RESEND_API_KEY || (config.email.user && config.email.password));
 };
 
 const getTransporter = () => {
-  if (!transporter && isEmailConfigured()) {
+  if (!transporter && (config.email.user && config.email.password)) {
     const cleanPassword = (config.email.password || '').replace(/\s+/g, '');
     const isGmail = (config.email.host && config.email.host.includes('gmail')) || 
                     (config.email.user && config.email.user.includes('@gmail.com')) ||
                     (process.env.EMAIL_SERVICE && process.env.EMAIL_SERVICE.toLowerCase() === 'gmail');
 
     if (isGmail) {
-      // Direct SSL on port 465 (bypasses Render/cloud outbound port 587 timeouts)
       transporter = nodemailer.createTransport({
         host: 'smtp.gmail.com',
         port: 465,
@@ -24,9 +23,9 @@ const getTransporter = () => {
           user: config.email.user,
           pass: cleanPassword
         },
-        connectionTimeout: 15000,
-        greetingTimeout: 15000,
-        socketTimeout: 20000
+        connectionTimeout: 10000,
+        greetingTimeout: 10000,
+        socketTimeout: 15000
       });
     } else {
       const port = Number(config.email.port) || 465;
@@ -38,30 +37,66 @@ const getTransporter = () => {
           user: config.email.user,
           pass: cleanPassword
         },
-        connectionTimeout: 15000,
-        greetingTimeout: 15000,
-        socketTimeout: 20000
+        connectionTimeout: 10000,
+        greetingTimeout: 10000,
+        socketTimeout: 15000
       });
     }
   }
   return transporter;
 };
 
+// Unified sender: Uses Resend HTTPS API on Port 443 (which is never blocked on Render) or Nodemailer SMTP
+export const sendEmailMessage = async ({ to, subject, text, html }) => {
+  // 1. Primary Cloud Option: Resend HTTPS API (Port 443)
+  if (process.env.RESEND_API_KEY) {
+    const toList = Array.isArray(to) ? to : [to];
+    const res = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        from: process.env.EMAIL_FROM || 'Marco India <onboarding@resend.dev>',
+        to: toList,
+        subject: subject,
+        text: text,
+        html: html
+      })
+    });
+    
+    const data = await res.json();
+    if (!res.ok) {
+      throw new Error(data.message || JSON.stringify(data));
+    }
+    return { success: true, provider: 'resend', id: data.id };
+  }
+
+  // 2. SMTP Transport
+  const client = getTransporter();
+  if (client) {
+    const fromAddr = config.email.from || `"Marco India" <${config.email.user}>`;
+    const toAddr = Array.isArray(to) ? to.join(',') : to;
+    const info = await client.sendMail({
+      from: fromAddr,
+      to: toAddr,
+      subject,
+      text,
+      html
+    });
+    return { success: true, provider: 'smtp', messageId: info.messageId };
+  }
+
+  throw new Error('No email service configured. Render Free Tier blocks direct SMTP (ports 25, 465, 587). Please provide RESEND_API_KEY.');
+};
+
 export const sendInquiryNotification = async (inquiryData) => {
   try {
     const recipients = config.email.adminEmails || ['faizanrock705@gmail.com', 'admin@marcoindia.in'];
-    const client = getTransporter();
     
-    if (!client) {
-      console.log(`[EmailService] SMTP not configured. New Inquiry from ${inquiryData.name} (${inquiryData.phone}) for ${inquiryData.serviceType}`);
-      return;
-    }
-    
-    const fromAddr = config.email.from || `"Marco India" <${config.email.user}>`;
-
-    await client.sendMail({
-      from: fromAddr,
-      to: recipients.join(','),
+    await sendEmailMessage({
+      to: recipients,
       subject: `🚨 New Inquiry: ${inquiryData.serviceType} — ${inquiryData.name}`,
       text: `New service inquiry received:\n\nName: ${inquiryData.name}\nPhone: ${inquiryData.phone}\nService: ${inquiryData.serviceType}\nLocation: ${inquiryData.location || 'N/A'}\nNotes: ${inquiryData.notes || 'None'}`,
       html: `
@@ -93,18 +128,9 @@ export const sendInquiryNotification = async (inquiryData) => {
 export const sendContactNotification = async (contactData) => {
   try {
     const recipients = config.email.adminEmails || ['faizanrock705@gmail.com', 'admin@marcoindia.in'];
-    const client = getTransporter();
-    
-    if (!client) {
-      console.log(`[EmailService] SMTP not configured. Contact submission from ${contactData.name} (${contactData.email}): ${contactData.message}`);
-      return;
-    }
-    
-    const fromAddr = config.email.from || `"Marco India" <${config.email.user}>`;
 
-    await client.sendMail({
-      from: fromAddr,
-      to: recipients.join(','),
+    await sendEmailMessage({
+      to: recipients,
       subject: `📩 New Contact Form Submission from ${contactData.name}`,
       text: `New contact form submission:\n\nName: ${contactData.name}\nEmail: ${contactData.email}\nPhone: ${contactData.phone || 'N/A'}\nService: ${contactData.serviceType || 'General'}\nMessage:\n${contactData.message}`,
       html: `
@@ -138,13 +164,8 @@ export const sendContactNotification = async (contactData) => {
 export const sendContactConfirmation = async (contactData) => {
   try {
     if (!contactData.email) return;
-    const client = getTransporter();
-    if (!client) return;
 
-    const fromAddr = config.email.from || `"Marco India" <${config.email.user}>`;
-
-    await client.sendMail({
-      from: fromAddr,
+    await sendEmailMessage({
       to: contactData.email,
       subject: 'Marco India — Thank you for reaching out',
       text: `Hi ${contactData.name},\n\nThank you for contacting Marco India. We have received your message regarding ${contactData.serviceType || 'our services'}.\n\nOur engineering team will review your message and get back to you shortly.\n\nWarm regards,\nMarco India Team\nPhone: +91 9315501070 / +91 8092099110\nWebsite: https://marcoindia.in`,
@@ -176,13 +197,8 @@ export const sendContactConfirmation = async (contactData) => {
 export const sendInquiryConfirmation = async (email, name, serviceType) => {
   try {
     if (!email) return;
-    const client = getTransporter();
-    if (!client) return;
 
-    const fromAddr = config.email.from || `"Marco India" <${config.email.user}>`;
-
-    await client.sendMail({
-      from: fromAddr,
+    await sendEmailMessage({
       to: email,
       subject: 'Marco India — We received your service inquiry',
       text: `Hi ${name},\n\nThank you for contacting Marco India. We have received your inquiry regarding ${serviceType}.\n\nOur engineering team will review your requirements and get in touch with you shortly.\n\nWarm regards,\nMarco India Team\nPhone: +91 9315501070 / +91 8092099110`
@@ -195,16 +211,8 @@ export const sendInquiryConfirmation = async (email, name, serviceType) => {
 export const sendPasswordResetEmail = async (email, resetLink) => {
   try {
     if (!email) return;
-    const client = getTransporter();
-    if (!client) {
-      console.log(`[EmailService] Password Reset Link for ${email}: ${resetLink}`);
-      return;
-    }
 
-    const fromAddr = config.email.from || `"Marco India" <${config.email.user}>`;
-
-    await client.sendMail({
-      from: fromAddr,
+    await sendEmailMessage({
       to: email,
       subject: 'Marco India — Reset Your Password',
       text: `Hello,\n\nYou requested a password reset for your Marco India account.\n\nPlease click the link below to set a new password:\n${resetLink}\n\nThis link will expire in 1 hour. If you did not request this, please ignore this email.\n\nWarm regards,\nMarco India Team`,
@@ -230,35 +238,27 @@ export const sendPasswordResetEmail = async (email, resetLink) => {
 };
 
 export const verifyAndTestEmail = async (targetEmail = 'faizanrock705@gmail.com') => {
-  const configured = isEmailConfigured();
-  if (!configured) {
+  const isResend = Boolean(process.env.RESEND_API_KEY);
+  const isSmtp = Boolean(config.email.user && config.email.password);
+
+  if (!isResend && !isSmtp) {
     return {
       success: false,
       status: 'MISSING_CREDENTIALS',
-      message: 'SMTP credentials missing. Please ensure EMAIL_USER and EMAIL_PASSWORD (or EMAIL_HOST) are set in Render Environment variables.',
-      configPresent: {
-        host: Boolean(config.email.host),
-        port: Boolean(config.email.port),
-        user: Boolean(config.email.user),
-        hasPassword: Boolean(config.email.password),
-        adminEmails: config.email.adminEmails
-      }
+      message: 'No email service configured. Please set RESEND_API_KEY in Render Environment to bypass Render cloud SMTP port blocks.',
+      hint: 'Get a free API key at https://resend.com (free 3,000 emails/month, 0 port blocks).'
     };
   }
 
   try {
-    const client = getTransporter();
-    await client.verify();
-
-    const info = await client.sendMail({
-      from: `"Marco India System" <${config.email.user}>`,
+    const result = await sendEmailMessage({
       to: targetEmail,
-      subject: '✅ Marco India Email System Test - Success!',
-      text: 'If you are reading this email, your Marco India backend email service is 100% operational and connected to Google SMTP!',
+      subject: '✅ Marco India Email Test — Success!',
+      text: 'If you are reading this email, your Marco India email service is 100% operational!',
       html: `
         <div style="font-family: Arial, sans-serif; padding: 20px; border: 2px solid #2D7A4F; border-radius: 8px;">
           <h2 style="color: #2D7A4F; margin-top: 0;">✅ Email Service is 100% Operational!</h2>
-          <p>This is a test notification confirming that <strong>${config.email.user}</strong> is successfully sending emails through Gmail SMTP to <strong>${targetEmail}</strong>.</p>
+          <p>This is a live test notification confirming that Marco India is successfully sending emails to <strong>${targetEmail}</strong> via <strong>${isResend ? 'Resend HTTPS API (Port 443)' : 'SMTP'}</strong>.</p>
           <p style="color: #666; font-size: 13px;">Timestamp: ${new Date().toISOString()}</p>
         </div>
       `
@@ -267,23 +267,20 @@ export const verifyAndTestEmail = async (targetEmail = 'faizanrock705@gmail.com'
     return {
       success: true,
       status: 'SENT_SUCCESSFULLY',
-      messageId: info.messageId,
-      accepted: info.accepted,
-      response: info.response,
-      sender: config.email.user,
-      recipient: targetEmail
+      provider: result.provider,
+      recipient: targetEmail,
+      details: result
     };
   } catch (error) {
+    const isTimeout = error.message?.includes('ETIMEDOUT') || error.code === 'ETIMEDOUT';
     return {
       success: false,
-      status: 'SMTP_CONNECTION_ERROR',
+      status: isTimeout ? 'SMTP_BLOCKED_BY_RENDER' : 'SEND_FAILED',
       error: error.message,
-      code: error.code || error.responseCode,
-      response: error.response,
-      sender: config.email.user,
-      hint: error.message?.includes('535') 
-        ? 'Google rejected your password. Make sure you are using a 16-character Google App Password generated at myaccount.google.com/security, NOT your normal Gmail password.'
-        : 'Check your email host/port settings.'
+      code: error.code,
+      hint: isTimeout 
+        ? 'Render Free Tier blocks raw SMTP ports (25, 465, 587). The standard fix on Render is to add RESEND_API_KEY (from resend.com) which sends via HTTPS port 443 without port restrictions.'
+        : error.message
     };
   }
 };
