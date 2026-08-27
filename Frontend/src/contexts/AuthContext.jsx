@@ -86,53 +86,62 @@ export const AuthProvider = ({ children }) => {
     await loadGoogleScript();
 
     return new Promise((resolve, reject) => {
-      window.google.accounts.id.initialize({
-        client_id: GOOGLE_CLIENT_ID,
-        callback: async (response) => {
-          try {
-            const { data } = await apiClient.post('/api/auth/google/', {
-              credential: response.credential,
-            });
-            localStorage.setItem('access_token', data.access);
-            localStorage.setItem('refresh_token', data.refresh);
-            await fetchUser();
-            resolve(data);
-          } catch (err) {
-            reject(new Error(err.response?.data?.detail || 'Google login failed.'));
-          }
-        },
-      });
+      try {
+        window.google.accounts.id.initialize({
+          client_id: GOOGLE_CLIENT_ID,
+          use_fedcm_for_prompt: true,
+          auto_select: false,
+          cancel_on_tap_outside: true,
+          callback: async (response) => {
+            if (!response?.credential) {
+              reject(new Error('Google login did not return credentials.'));
+              return;
+            }
+            try {
+              const { data } = await apiClient.post('/api/auth/google/', {
+                credential: response.credential,
+              });
+              localStorage.setItem('access_token', data.access);
+              localStorage.setItem('refresh_token', data.refresh);
+              await fetchUser();
+              resolve(data);
+            } catch (err) {
+              reject(new Error(err.response?.data?.detail || 'Google login failed.'));
+            }
+          },
+        });
 
-      // Trigger the One Tap / popup flow
-      window.google.accounts.id.prompt((notification) => {
-        if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-          // Fallback: use the button-based popup
-          const buttonDiv = document.createElement('div');
-          buttonDiv.style.display = 'none';
-          document.body.appendChild(buttonDiv);
+        // Trigger Google One Tap / Button flow
+        const buttonContainer = document.createElement('div');
+        buttonContainer.style.position = 'fixed';
+        buttonContainer.style.top = '-9999px';
+        buttonContainer.style.left = '-9999px';
+        buttonContainer.style.opacity = '0';
+        buttonContainer.style.pointerEvents = 'none';
+        document.body.appendChild(buttonContainer);
 
-          window.google.accounts.id.renderButton(buttonDiv, {
-            type: 'standard',
-            size: 'large',
-          });
+        window.google.accounts.id.renderButton(buttonContainer, {
+          type: 'standard',
+          size: 'large',
+        });
 
-          // Click the hidden button to trigger popup
-          const btn = buttonDiv.querySelector('div[role="button"]');
+        setTimeout(() => {
+          const btn = buttonContainer.querySelector('div[role="button"]');
           if (btn) {
             btn.click();
           } else {
-            document.body.removeChild(buttonDiv);
-            reject(new Error('Google Sign-In popup could not be displayed. Please allow popups.'));
+            window.google.accounts.id.prompt();
           }
 
-          // Clean up after a delay
           setTimeout(() => {
-            if (document.body.contains(buttonDiv)) {
-              document.body.removeChild(buttonDiv);
+            if (document.body.contains(buttonContainer)) {
+              document.body.removeChild(buttonContainer);
             }
-          }, 60000);
-        }
-      });
+          }, 30000);
+        }, 50);
+      } catch (err) {
+        reject(err);
+      }
     });
   };
 
