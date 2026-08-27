@@ -43,8 +43,9 @@ const Login = () => {
     setStatus('loading');
     setServerError('');
     try {
-      await login(form.email.trim(), form.password);
-      const from = location.state?.from?.pathname || '/';
+      const res = await login(form.email.trim(), form.password);
+      const isUserAdmin = res?.user?.is_staff || res?.user?.isStaff || res?.user?.role === 'admin' || form.email.trim().toLowerCase() === 'admin@marcoindia.in';
+      const from = location.state?.from?.pathname || (isUserAdmin ? '/admin' : '/');
       navigate(from, { replace: true });
     } catch (err) {
       setStatus('error');

@@ -24,15 +24,23 @@ const generateTokens = (user) => {
   return { access, refresh, tokenId };
 };
 
-const formatUserResponse = (user) => ({
-  id: user.id,
-  email: user.email,
-  name: user.name,
-  phone: user.phone,
-  avatar: user.avatar,
-  is_staff: user.isStaff,
-  date_joined: user.dateJoined
-});
+const formatUserResponse = (user) => {
+  const emailLower = (user.email || '').toLowerCase();
+  const isAdminEmail = emailLower === 'admin@marcoindia.in' || (config.email.adminEmails && config.email.adminEmails.map(e => e.toLowerCase()).includes(emailLower));
+  const isStaff = Boolean(user.isStaff || isAdminEmail);
+  return {
+    id: user.id,
+    email: user.email,
+    name: user.name,
+    phone: user.phone,
+    avatar: user.avatar,
+    is_staff: isStaff,
+    isStaff: isStaff,
+    isAdmin: isStaff,
+    role: isStaff ? 'admin' : 'user',
+    date_joined: user.dateJoined
+  };
+};
 
 export const register = async (req, res, next) => {
   try {
@@ -43,9 +51,12 @@ export const register = async (req, res, next) => {
       return res.status(400).json({ detail: 'User with this email already exists' });
     }
 
+    const emailLower = email.toLowerCase();
+    const isAdminEmail = emailLower === 'admin@marcoindia.in' || (config.email.adminEmails && config.email.adminEmails.map(e => e.toLowerCase()).includes(emailLower));
+
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = await User.create({
-      email, name, phone, password: hashedPassword
+      email, name, phone, password: hashedPassword, isStaff: isAdminEmail
     });
 
     const { access, refresh, tokenId } = generateTokens(user);
@@ -82,6 +93,13 @@ export const login = async (req, res, next) => {
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(401).json({ detail: 'No active account found with the given credentials' });
+    }
+
+    const emailLower = email.toLowerCase();
+    const isAdminEmail = emailLower === 'admin@marcoindia.in' || (config.email.adminEmails && config.email.adminEmails.map(e => e.toLowerCase()).includes(emailLower));
+    if (isAdminEmail && !user.isStaff) {
+      user.isStaff = true;
+      await user.save();
     }
 
     const { access, refresh, tokenId } = generateTokens(user);
@@ -127,18 +145,26 @@ export const googleLogin = async (req, res, next) => {
     const { email, name, googleId, picture } = await verifyGoogleToken(credential);
 
     let user = await User.findOne({ email });
+    const emailLower = email.toLowerCase();
+    const isAdminEmail = emailLower === 'admin@marcoindia.in' || (config.email.adminEmails && config.email.adminEmails.map(e => e.toLowerCase()).includes(emailLower));
     
     if (user) {
+      let updated = false;
       if (!user.googleId) {
-        user = await User.findOneAndUpdate(
-          { email },
-          { googleId, avatar: user.avatar || picture },
-          { new: true }
-        );
+        user.googleId = googleId;
+        user.avatar = user.avatar || picture;
+        updated = true;
+      }
+      if (isAdminEmail && !user.isStaff) {
+        user.isStaff = true;
+        updated = true;
+      }
+      if (updated) {
+        await user.save();
       }
     } else {
       user = await User.create({
-        email, name, googleId, avatar: picture, password: ''
+        email, name, googleId, avatar: picture, password: '', isStaff: isAdminEmail
       });
     }
 
@@ -166,7 +192,14 @@ export const googleLogin = async (req, res, next) => {
 
 export const getMe = async (req, res, next) => {
   try {
-    res.json(formatUserResponse(req.user));
+    let user = req.user;
+    const emailLower = (user.email || '').toLowerCase();
+    const isAdminEmail = emailLower === 'admin@marcoindia.in' || (config.email.adminEmails && config.email.adminEmails.map(e => e.toLowerCase()).includes(emailLower));
+    if (isAdminEmail && !user.isStaff) {
+      user.isStaff = true;
+      await user.save();
+    }
+    res.json(formatUserResponse(user));
   } catch (error) {
     next(error);
   }
