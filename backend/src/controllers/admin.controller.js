@@ -18,18 +18,31 @@ export const getStats = async (req, res, next) => {
     ]);
 
     const recentInquiries = await Inquiry.find().sort({ createdAt: -1 }).limit(5);
-
     const recentContacts = await ContactMessage.find().sort({ createdAt: -1 }).limit(5);
 
-    // Mock chart data for last 6 months to match Django logic or generate simple mock
-    const chartData = [
-      { month: 'Jan', inquiries: 5, contacts: 3, users: 2 },
-      { month: 'Feb', inquiries: 7, contacts: 4, users: 3 },
-      { month: 'Mar', inquiries: 10, contacts: 5, users: 4 },
-      { month: 'Apr', inquiries: 12, contacts: 6, users: 5 },
-      { month: 'May', inquiries: 15, contacts: 8, users: 7 },
-      { month: 'Jun', inquiries: 20, contacts: 10, users: 10 },
-    ];
+    // Compute REAL monthly aggregates for the last 6 months from MongoDB
+    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const chartData = [];
+    const now = new Date();
+
+    for (let i = 5; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const startOfMonth = new Date(d.getFullYear(), d.getMonth(), 1);
+      const endOfMonth = new Date(d.getFullYear(), d.getMonth() + 1, 0, 23, 59, 59, 999);
+      
+      const [inquiries, contacts, users] = await Promise.all([
+        Inquiry.countDocuments({ createdAt: { $gte: startOfMonth, $lte: endOfMonth } }),
+        ContactMessage.countDocuments({ createdAt: { $gte: startOfMonth, $lte: endOfMonth } }),
+        User.countDocuments({ createdAt: { $gte: startOfMonth, $lte: endOfMonth } }),
+      ]);
+
+      chartData.push({
+        month: monthNames[d.getMonth()],
+        inquiries,
+        contacts,
+        users
+      });
+    }
 
     res.json({
       total_inquiries: totalInquiries,

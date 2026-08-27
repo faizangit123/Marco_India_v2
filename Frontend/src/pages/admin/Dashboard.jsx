@@ -1,28 +1,9 @@
 import { useState, useEffect } from 'react';
-import { ClipboardList, Users, Image, MessageSquare, Mail, Loader, TrendingUp, Activity, Clock, CheckCircle, AlertCircle, UserPlus, Star } from 'lucide-react';
+import { ClipboardList, Users, Image, MessageSquare, Mail, Loader, TrendingUp, Clock, Star } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
 import { Link } from 'react-router-dom';
 import apiClient from '../../api/client';
 import './AdminLayout.css';
-
-const FALLBACK_STATS = {
-  total_inquiries: 142,
-  pending_requests: 23,
-  total_users: 89,
-  gallery_items: 36,
-  total_comments: 217,
-  total_contacts: 45,
-  total_testimonials: 12,
-};
-
-const FALLBACK_CHART_DATA = [
-  { month: 'Jan', inquiries: 12, contacts: 5, users: 8 },
-  { month: 'Feb', inquiries: 19, contacts: 8, users: 12 },
-  { month: 'Mar', inquiries: 28, contacts: 12, users: 15 },
-  { month: 'Apr', inquiries: 22, contacts: 9, users: 18 },
-  { month: 'May', inquiries: 35, contacts: 15, users: 22 },
-  { month: 'Jun', inquiries: 26, contacts: 11, users: 19 },
-];
 
 const timeAgo = (dateStr) => {
   if (!dateStr) return '';
@@ -38,7 +19,7 @@ const timeAgo = (dateStr) => {
 
 const Dashboard = () => {
   const [stats, setStats] = useState(null);
-  const [chartData, setChartData] = useState(null);
+  const [chartData, setChartData] = useState([]);
   const [recentInquiries, setRecentInquiries] = useState([]);
   const [recentContacts, setRecentContacts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -49,13 +30,11 @@ const Dashboard = () => {
       try {
         const { data } = await apiClient.get('/api/admin/stats/');
         setStats(data);
-        setChartData(data.chart_data || FALLBACK_CHART_DATA);
+        setChartData(data.chart_data || []);
         setRecentInquiries(data.recent_inquiries || []);
         setRecentContacts(data.recent_contacts || []);
-      } catch {
-        setStats(FALLBACK_STATS);
-        setChartData(FALLBACK_CHART_DATA);
-        setError('Preview mode — displaying sample data');
+      } catch (err) {
+        setError(err.response?.data?.detail || 'Failed to load live dashboard statistics.');
       } finally {
         setLoading(false);
       }
@@ -69,7 +48,7 @@ const Dashboard = () => {
     <div className="dashboard">
       <div className="admin-header">
         <h1 className="admin-header__title">Dashboard</h1>
-        <p className="admin-header__subtitle">Overview of your Marco India operations</p>
+        <p className="admin-header__subtitle">Real-time overview of your Marco India operations</p>
         {error && <span className="dashboard-preview-badge">{error}</span>}
       </div>
 
@@ -124,26 +103,27 @@ const Dashboard = () => {
               <AreaChart data={chartData}>
                 <defs>
                   <linearGradient id="inquiryGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0}/>
+                    <stop offset="5%" stopColor="#C75B2B" stopOpacity={0.3}/>
+                    <stop offset="95%" stopColor="#C75B2B" stopOpacity={0}/>
                   </linearGradient>
                   <linearGradient id="contactGradient" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#22c55e" stopOpacity={0.3}/>
                     <stop offset="95%" stopColor="#22c55e" stopOpacity={0}/>
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                <XAxis dataKey="month" stroke="hsl(var(--muted-foreground))" fontSize={12} />
-                <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#E5E2DB" />
+                <XAxis dataKey="month" stroke="#1A1A1A" fontSize={12} />
+                <YAxis stroke="#1A1A1A" fontSize={12} />
                 <Tooltip 
                   contentStyle={{ 
-                    backgroundColor: 'hsl(var(--card))', 
-                    border: '1px solid hsl(var(--border))',
+                    backgroundColor: '#FFFFFF', 
+                    border: '1px solid #E5E2DB',
                     borderRadius: '8px',
-                    color: 'hsl(var(--foreground))'
+                    color: '#1A1A1A',
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.08)'
                   }}
                 />
-                <Area type="monotone" dataKey="inquiries" stroke="hsl(var(--primary))" fillOpacity={1} fill="url(#inquiryGradient)" strokeWidth={2} name="Inquiries" />
+                <Area type="monotone" dataKey="inquiries" stroke="#C75B2B" fillOpacity={1} fill="url(#inquiryGradient)" strokeWidth={2} name="Inquiries" />
                 <Area type="monotone" dataKey="contacts" stroke="#22c55e" fillOpacity={1} fill="url(#contactGradient)" strokeWidth={2} name="Contacts" />
               </AreaChart>
             </ResponsiveContainer>
@@ -158,25 +138,26 @@ const Dashboard = () => {
           <div className="dashboard-chart-card__body">
             <ResponsiveContainer width="100%" height={250}>
               <BarChart data={chartData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                <XAxis dataKey="month" stroke="hsl(var(--muted-foreground))" fontSize={12} />
-                <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#E5E2DB" />
+                <XAxis dataKey="month" stroke="#1A1A1A" fontSize={12} />
+                <YAxis stroke="#1A1A1A" fontSize={12} />
                 <Tooltip 
                   contentStyle={{ 
-                    backgroundColor: 'hsl(var(--card))', 
-                    border: '1px solid hsl(var(--border))',
+                    backgroundColor: '#FFFFFF', 
+                    border: '1px solid #E5E2DB',
                     borderRadius: '8px',
-                    color: 'hsl(var(--foreground))'
+                    color: '#1A1A1A',
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.08)'
                   }}
                 />
-                <Bar dataKey="users" fill="hsl(var(--accent))" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="users" fill="#C75B2B" radius={[4, 4, 0, 0]} name="New Users" />
               </BarChart>
             </ResponsiveContainer>
           </div>
         </div>
       </div>
 
-      {/* Recent Activity — Real Data */}
+      {/* Recent Activity — Real Data Only */}
       <div className="dashboard-charts">
         <div className="dashboard-activity-card">
           <div className="dashboard-activity-card__header">
@@ -196,8 +177,8 @@ const Dashboard = () => {
                         <strong>{item.name}</strong> — {item.service_type}
                       </p>
                       <span className="dashboard-activity__time">
-                        <span className={`profile__status status--${item.status}`} style={{ fontSize: '0.7rem', padding: '1px 6px', marginRight: 6 }}>
-                          {item.status}
+                        <span className={`analytics-status-badge analytics-status-badge--${item.status}`} style={{ fontSize: '0.7rem', padding: '1px 6px', marginRight: 6 }}>
+                          {item.status.replace('_', ' ')}
                         </span>
                         {timeAgo(item.created_at)}
                       </span>
@@ -206,7 +187,7 @@ const Dashboard = () => {
                 ))}
               </ul>
             ) : (
-              <p className="dashboard-activity__empty">No recent inquiries</p>
+              <p className="dashboard-activity__empty">No inquiries yet</p>
             )}
           </div>
         </div>
@@ -226,7 +207,7 @@ const Dashboard = () => {
                     </div>
                     <div className="dashboard-activity__content">
                       <p className="dashboard-activity__message">
-                        <strong>{item.name}</strong> ({item.email}) — {item.service_type}
+                        <strong>{item.name}</strong> ({item.email}) — {item.service_type || 'General'}
                       </p>
                       <span className="dashboard-activity__time">{timeAgo(item.created_at)}</span>
                     </div>
@@ -234,7 +215,7 @@ const Dashboard = () => {
                 ))}
               </ul>
             ) : (
-              <p className="dashboard-activity__empty">No recent contacts</p>
+              <p className="dashboard-activity__empty">No contact messages yet</p>
             )}
           </div>
         </div>

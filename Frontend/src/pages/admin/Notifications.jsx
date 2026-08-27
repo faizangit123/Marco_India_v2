@@ -1,76 +1,72 @@
-import { useState } from 'react';
-import { Bell, Check, Trash2, Mail, AlertCircle, CheckCircle, Info, Clock, Filter } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Bell, Check, Trash2, Mail, Loader, CheckCircle } from 'lucide-react';
+import apiClient from '../../api/client';
 import './AdminLayout.css';
 
-const SAMPLE_NOTIFICATIONS = [
-  {
-    id: 1,
-    type: 'inquiry',
-    title: 'New Service Request',
-    message: 'Rahul Sharma submitted a CCTV installation inquiry for residential property.',
-    time: '5 minutes ago',
-    read: false,
-    icon: Mail,
-  },
-  {
-    id: 2,
-    type: 'success',
-    title: 'Payment Received',
-    message: 'Payment of ₹45,000 received for Order #1042 (Telecom Infrastructure).',
-    time: '1 hour ago',
-    read: false,
-    icon: CheckCircle,
-  },
-  {
-    id: 3,
-    type: 'alert',
-    title: 'Pending Follow-up',
-    message: 'Service request #1038 has been pending for 3 days. Customer awaiting response.',
-    time: '2 hours ago',
-    read: false,
-    icon: AlertCircle,
-  },
-  {
-    id: 4,
-    type: 'info',
-    title: 'New User Registration',
-    message: 'New user priya.singh@example.com has registered on the platform.',
-    time: '4 hours ago',
-    read: true,
-    icon: Info,
-  },
-  {
-    id: 5,
-    type: 'success',
-    title: 'Project Completed',
-    message: 'Fiber Optic Cabling project for Tech Solutions Pvt Ltd marked as complete.',
-    time: '6 hours ago',
-    read: true,
-    icon: CheckCircle,
-  },
-  {
-    id: 6,
-    type: 'inquiry',
-    title: 'Quote Request',
-    message: 'ABC Industries requested a quote for Signal Boosting services.',
-    time: '1 day ago',
-    read: true,
-    icon: Mail,
-  },
-  {
-    id: 7,
-    type: 'alert',
-    title: 'AMC Renewal Due',
-    message: 'AMC contract for Client #892 is due for renewal in 7 days.',
-    time: '1 day ago',
-    read: true,
-    icon: Clock,
-  },
-];
+const timeAgo = (dateStr) => {
+  if (!dateStr) return '';
+  const diff = Date.now() - new Date(dateStr).getTime();
+  const mins = Math.floor(diff / 60000);
+  if (mins < 1) return 'Just now';
+  if (mins < 60) return `${mins}m ago`;
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return `${hrs}h ago`;
+  const days = Math.floor(hrs / 24);
+  return `${days}d ago`;
+};
 
 const Notifications = () => {
-  const [notifications, setNotifications] = useState(SAMPLE_NOTIFICATIONS);
+  const [notifications, setNotifications] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all');
+
+  useEffect(() => {
+    const fetchRealNotifications = async () => {
+      try {
+        const { data } = await apiClient.get('/api/admin/stats/');
+        const realItems = [];
+        
+        if (data.recent_inquiries) {
+          data.recent_inquiries.forEach((inq) => {
+            realItems.push({
+              id: `inq-${inq.id}`,
+              type: 'inquiry',
+              title: 'New Service Request',
+              message: `${inq.name} submitted a ${inq.service_type} inquiry.`,
+              time: timeAgo(inq.created_at),
+              timestamp: new Date(inq.created_at || Date.now()).getTime(),
+              read: inq.status !== 'submitted',
+              icon: Mail,
+            });
+          });
+        }
+
+        if (data.recent_contacts) {
+          data.recent_contacts.forEach((contact) => {
+            realItems.push({
+              id: `contact-${contact.id}`,
+              type: 'contact',
+              title: 'New Contact Message',
+              message: `${contact.name} (${contact.email}) sent a message regarding ${contact.service_type || 'General Inquiry'}.`,
+              time: timeAgo(contact.created_at),
+              timestamp: new Date(contact.created_at || Date.now()).getTime(),
+              read: false,
+              icon: CheckCircle,
+            });
+          });
+        }
+
+        realItems.sort((a, b) => b.timestamp - a.timestamp);
+        setNotifications(realItems);
+      } catch (err) {
+        console.error('Failed to load notifications:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRealNotifications();
+  }, []);
 
   const unreadCount = notifications.filter(n => !n.read).length;
 
@@ -98,22 +94,20 @@ const Notifications = () => {
     return true;
   });
 
-  const getNotificationStyle = (type) => {
-    switch (type) {
-      case 'inquiry': return 'notification-item__icon--inquiry';
-      case 'success': return 'notification-item__icon--success';
-      case 'alert': return 'notification-item__icon--alert';
-      case 'info': return 'notification-item__icon--info';
-      default: return '';
-    }
-  };
+  if (loading) {
+    return (
+      <div className="admin-loading">
+        <Loader size={24} className="auth-form__spinner" /> Loading real notifications...
+      </div>
+    );
+  }
 
   return (
     <div className="notifications-page">
       <div className="admin-header">
         <h1 className="admin-header__title">Notifications</h1>
         <p className="admin-header__subtitle">
-          Manage your notifications and alerts
+          Real-time customer inquiries and contact updates from your database
           {unreadCount > 0 && <span className="notifications-badge">{unreadCount} unread</span>}
         </p>
       </div>
@@ -165,7 +159,7 @@ const Notifications = () => {
                 key={notification.id}
                 className={`notification-item ${!notification.read ? 'notification-item--unread' : ''}`}
               >
-                <div className={`notification-item__icon ${getNotificationStyle(notification.type)}`}>
+                <div className={`notification-item__icon notification-item__icon--inquiry`}>
                   <IconComponent size={18} />
                 </div>
                 <div className="notification-item__content">
