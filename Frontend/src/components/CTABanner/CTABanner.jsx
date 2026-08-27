@@ -1,9 +1,14 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import './CTABanner.css';
 
 const CTABanner = () => {
+  const location = useLocation();
+  if (location.pathname.startsWith('/admin') || location.pathname.startsWith('/profile')) {
+    return null;
+  }
+
   return (
     <section className="cta-banner">
       <div className="container">
