@@ -19,10 +19,10 @@ export const config = {
     port: process.env.EMAIL_PORT,
     user: process.env.EMAIL_USER,
     password: process.env.EMAIL_PASSWORD,
-    from: process.env.EMAIL_FROM || 'noreply@marcoindia.in',
+    from: process.env.EMAIL_FROM || 'Marco India <onboarding@resend.dev>',
     adminEmails: process.env.ADMIN_EMAILS 
       ? process.env.ADMIN_EMAILS.split(',').map(e => e.trim()) 
-      : ['faizanrock705@gmail.com', 'admin@marcoindia.in'],
+      : ['plex962@gmail.com', 'faizanrock705@gmail.com', 'admin@marcoindia.in'],
   },
   env: process.env.NODE_ENV || 'development'
 };

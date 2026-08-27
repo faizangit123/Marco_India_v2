@@ -68,7 +68,7 @@ export const adminDetail = async (req, res, next) => {
 };
 
 export const testEmail = async (req, res) => {
-  const target = req.query.to || 'faizanrock705@gmail.com';
+  const target = req.query.to || (config.email.adminEmails && config.email.adminEmails[0]) || 'plex962@gmail.com';
   const result = await verifyAndTestEmail(target);
   return res.json(result);
 };
