@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { Settings as SettingsIcon, Bell, Shield, Palette, Globe, Mail, Save, Loader } from 'lucide-react';
+import { Bell, Shield, Palette, Globe, Save, Loader, CheckCircle } from 'lucide-react';
 import './AdminLayout.css';
 
 const Settings = () => {
   const [saving, setSaving] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
   const [settings, setSettings] = useState({
     siteName: 'Marco India',
     contactEmail: 'marcoindia@gmail.com',
@@ -15,7 +16,7 @@ const Settings = () => {
     allowRegistration: true,
     requireEmailVerification: false,
     primaryColor: '#C75B2B',
-    accentColor: '#6366f1',
+    accentColor: '#1A1A1A',
   });
 
   const handleChange = (key, value) => {
@@ -24,17 +25,35 @@ const Settings = () => {
 
   const handleSave = async () => {
     setSaving(true);
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    setSuccessMessage('');
+    await new Promise(resolve => setTimeout(resolve, 600));
     setSaving(false);
-    alert('Settings saved successfully!');
+    setSuccessMessage('Settings updated successfully!');
+    setTimeout(() => setSuccessMessage(''), 4000);
   };
 
   return (
     <div className="settings">
       <div className="admin-header">
         <h1 className="admin-header__title">Settings</h1>
-        <p className="admin-header__subtitle">Configure your website and application settings</p>
+        <p className="admin-header__subtitle">Configure your website and enterprise application parameters</p>
+        {successMessage && (
+          <div style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '8px',
+            marginTop: '12px',
+            padding: '8px 16px',
+            background: 'rgba(22, 163, 74, 0.12)',
+            color: '#16a34a',
+            borderRadius: '8px',
+            fontSize: '0.88rem',
+            fontWeight: '600'
+          }}>
+            <CheckCircle size={18} />
+            <span>{successMessage}</span>
+          </div>
+        )}
       </div>
 
       <div className="settings-grid">
@@ -64,16 +83,16 @@ const Settings = () => {
               />
             </div>
             <div className="settings-field">
-              <label className="settings-label">Contact Phone</label>
+              <label className="settings-label">Contact Phone Numbers</label>
               <input
-                type="tel"
+                type="text"
                 className="settings-input"
                 value={settings.contactPhone}
                 onChange={(e) => handleChange('contactPhone', e.target.value)}
               />
             </div>
             <div className="settings-field">
-              <label className="settings-label">Business Address</label>
+              <label className="settings-label">Headquarters Address</label>
               <textarea
                 className="settings-textarea"
                 value={settings.address}
@@ -94,9 +113,10 @@ const Settings = () => {
             <div className="settings-toggle-row">
               <div className="settings-toggle-info">
                 <span className="settings-toggle-label">Push Notifications</span>
-                <span className="settings-toggle-desc">Receive browser push notifications</span>
+                <span className="settings-toggle-desc">Receive real-time browser notifications for inquiries</span>
               </div>
               <button
+                type="button"
                 className={`settings-toggle ${settings.enableNotifications ? 'settings-toggle--active' : ''}`}
                 onClick={() => handleChange('enableNotifications', !settings.enableNotifications)}
               >
@@ -106,9 +126,10 @@ const Settings = () => {
             <div className="settings-toggle-row">
               <div className="settings-toggle-info">
                 <span className="settings-toggle-label">Email Notifications</span>
-                <span className="settings-toggle-desc">Receive updates via email</span>
+                <span className="settings-toggle-desc">Send automated email alerts to admins</span>
               </div>
               <button
+                type="button"
                 className={`settings-toggle ${settings.emailNotifications ? 'settings-toggle--active' : ''}`}
                 onClick={() => handleChange('emailNotifications', !settings.emailNotifications)}
               >
@@ -128,9 +149,10 @@ const Settings = () => {
             <div className="settings-toggle-row">
               <div className="settings-toggle-info">
                 <span className="settings-toggle-label">Allow User Registration</span>
-                <span className="settings-toggle-desc">Enable new user sign-ups</span>
+                <span className="settings-toggle-desc">Enable new customer account creation</span>
               </div>
               <button
+                type="button"
                 className={`settings-toggle ${settings.allowRegistration ? 'settings-toggle--active' : ''}`}
                 onClick={() => handleChange('allowRegistration', !settings.allowRegistration)}
               >
@@ -140,9 +162,10 @@ const Settings = () => {
             <div className="settings-toggle-row">
               <div className="settings-toggle-info">
                 <span className="settings-toggle-label">Require Email Verification</span>
-                <span className="settings-toggle-desc">Users must verify email to login</span>
+                <span className="settings-toggle-desc">Users must verify email before accessing portal</span>
               </div>
               <button
+                type="button"
                 className={`settings-toggle ${settings.requireEmailVerification ? 'settings-toggle--active' : ''}`}
                 onClick={() => handleChange('requireEmailVerification', !settings.requireEmailVerification)}
               >
@@ -152,9 +175,10 @@ const Settings = () => {
             <div className="settings-toggle-row">
               <div className="settings-toggle-info">
                 <span className="settings-toggle-label">Maintenance Mode</span>
-                <span className="settings-toggle-desc">Show maintenance page to visitors</span>
+                <span className="settings-toggle-desc">Show maintenance banner to public visitors</span>
               </div>
               <button
+                type="button"
                 className={`settings-toggle ${settings.maintenanceMode ? 'settings-toggle--active' : ''}`}
                 onClick={() => handleChange('maintenanceMode', !settings.maintenanceMode)}
               >
@@ -168,11 +192,11 @@ const Settings = () => {
         <div className="settings-card">
           <div className="settings-card__header">
             <Palette size={20} />
-            <h3>Appearance</h3>
+            <h3>Appearance & Branding</h3>
           </div>
           <div className="settings-card__body">
             <div className="settings-field">
-              <label className="settings-label">Primary Color</label>
+              <label className="settings-label">Primary Terracotta Accent</label>
               <div className="settings-color-row">
                 <input
                   type="color"
@@ -189,7 +213,7 @@ const Settings = () => {
               </div>
             </div>
             <div className="settings-field">
-              <label className="settings-label">Accent Color</label>
+              <label className="settings-label">Neutral Contrast Accent</label>
               <div className="settings-color-row">
                 <input
                   type="color"
@@ -213,7 +237,7 @@ const Settings = () => {
       <div className="settings-actions">
         <button className="settings-save-btn" onClick={handleSave} disabled={saving}>
           {saving ? <Loader size={18} className="auth-form__spinner" /> : <Save size={18} />}
-          {saving ? 'Saving...' : 'Save Changes'}
+          {saving ? 'Saving...' : 'Save Settings'}
         </button>
       </div>
     </div>
