@@ -54,3 +54,15 @@ desktop.ini
 
 # ---------- Docker ----------
 *.env.docker
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Google OAuth credentials
+client_secret_*.json
+client_secret_*.apps.googleusercontent.com
+
+# MongoDB / Atlas credentials
+atlas-credentials.txt
