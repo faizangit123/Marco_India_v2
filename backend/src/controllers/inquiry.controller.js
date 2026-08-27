@@ -39,7 +39,8 @@ export const listCreate = async (req, res, next) => {
         })));
       }
     } else if (req.method === 'POST') {
-      const { name, phone, service_type } = req.body;
+      const { name, phone, service_type, email, notes, location } = req.body;
+      const userEmail = req.user?.email || email;
       
       const inquiry = await Inquiry.create({
         name,
@@ -48,9 +49,18 @@ export const listCreate = async (req, res, next) => {
         userId: req.user ? req.user.id : null
       });
 
-      sendInquiryNotification(inquiry).catch(console.error);
-      if (req.user?.email) {
-        sendInquiryConfirmation(req.user.email, name, service_type).catch(console.error);
+      sendInquiryNotification({
+        id: inquiry.id,
+        name: inquiry.name,
+        phone: inquiry.phone,
+        email: userEmail || '',
+        serviceType: inquiry.serviceType,
+        notes: notes || '',
+        location: location || ''
+      }).catch(console.error);
+
+      if (userEmail) {
+        sendInquiryConfirmation(userEmail, name, service_type).catch(console.error);
       }
 
       res.status(201).json({

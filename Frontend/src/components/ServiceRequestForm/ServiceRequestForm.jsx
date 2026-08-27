@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Send, CheckCircle, AlertCircle, Loader } from 'lucide-react';
+import { useAuth } from '../../contexts/AuthContext';
 import apiClient from '../../api/client';
 import './ServiceRequestForm.css';
 
@@ -14,10 +15,25 @@ const SERVICE_TYPES = [
 ];
 
 const ServiceRequestForm = ({ preselectedService = '' }) => {
-  const [form, setForm] = useState({ name: '', phone: '', service: preselectedService });
+  const { user } = useAuth();
+  const [form, setForm] = useState({ 
+    name: user?.name || '', 
+    phone: user?.phone || '', 
+    service: preselectedService 
+  });
   const [errors, setErrors] = useState({});
   const [status, setStatus] = useState('idle'); // idle | loading | success | error
   const [serverMsg, setServerMsg] = useState('');
+
+  useEffect(() => {
+    if (user) {
+      setForm(p => ({
+        ...p,
+        name: p.name || user.name || '',
+        phone: p.phone || user.phone || ''
+      }));
+    }
+  }, [user]);
 
   const validate = () => {
     const newErrors = {};
@@ -64,10 +80,11 @@ const ServiceRequestForm = ({ preselectedService = '' }) => {
         name: form.name.trim(),
         phone: form.phone.trim(),
         service_type: form.service,
+        email: user?.email || '',
       });
       setStatus('success');
-      setServerMsg('Thank you! We will contact you shortly.');
-      setForm({ name: '', phone: '', service: '' });
+      setServerMsg('Thank you! Your request has been registered and a confirmation was sent.');
+      setForm({ name: user?.name || '', phone: user?.phone || '', service: '' });
     } catch (err) {
       setStatus('error');
       const msg = err.response?.data?.detail || 'Something went wrong. Please try again.';

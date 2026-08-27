@@ -96,28 +96,29 @@ export const sendEmailMessage = async ({ to, subject, text, html }) => {
 
 export const sendInquiryNotification = async (inquiryData) => {
   try {
-    const recipients = config.email.adminEmails || ['faizanrock705@gmail.com', 'admin@marcoindia.in'];
+    const recipients = config.email.adminEmails || ['plex962@gmail.com', 'marcoindia@gmail.com'];
     
     await sendEmailMessage({
       to: recipients,
-      subject: `🚨 New Inquiry: ${inquiryData.serviceType} — ${inquiryData.name}`,
-      text: `New service inquiry received:\n\nName: ${inquiryData.name}\nPhone: ${inquiryData.phone}\nService: ${inquiryData.serviceType}\nLocation: ${inquiryData.location || 'N/A'}\nNotes: ${inquiryData.notes || 'None'}`,
+      subject: `🚨 New Service Request: ${inquiryData.serviceType} — ${inquiryData.name}`,
+      text: `New service inquiry received:\n\nName: ${inquiryData.name}\nPhone: ${inquiryData.phone}\nEmail: ${inquiryData.email || 'N/A'}\nService: ${inquiryData.serviceType}\nLocation: ${inquiryData.location || 'N/A'}\nNotes: ${inquiryData.notes || 'None'}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #E5E2DB; border-radius: 12px; overflow: hidden;">
           <div style="background: #C75B2B; padding: 20px; color: #ffffff;">
-            <h2 style="margin: 0; font-size: 20px;">🚨 New Service Inquiry Received</h2>
+            <h2 style="margin: 0; font-size: 20px;">🚨 New Service Request Received</h2>
             <p style="margin: 5px 0 0 0; opacity: 0.9;">Marco India Portal Notification</p>
           </div>
           <div style="padding: 24px; background: #ffffff; color: #1A1A1A;">
             <table style="width: 100%; border-collapse: collapse;">
               <tr><td style="padding: 8px 0; color: #666; width: 140px;"><strong>Client Name:</strong></td><td style="padding: 8px 0; font-size: 16px;"><strong>${inquiryData.name}</strong></td></tr>
               <tr><td style="padding: 8px 0; color: #666;"><strong>Phone Number:</strong></td><td style="padding: 8px 0;"><a href="tel:${inquiryData.phone}" style="color: #C75B2B; font-weight: bold; text-decoration: none;">${inquiryData.phone}</a></td></tr>
-              <tr><td style="padding: 8px 0; color: #666;"><strong>Service Requested:</strong></td><td style="padding: 8px 0;">${inquiryData.serviceType}</td></tr>
+              ${inquiryData.email ? `<tr><td style="padding: 8px 0; color: #666;"><strong>Client Email:</strong></td><td style="padding: 8px 0;"><a href="mailto:${inquiryData.email}" style="color: #C75B2B; text-decoration: none;">${inquiryData.email}</a></td></tr>` : ''}
+              <tr><td style="padding: 8px 0; color: #666;"><strong>Service Requested:</strong></td><td style="padding: 8px 0; font-weight: bold;">${inquiryData.serviceType}</td></tr>
               ${inquiryData.location ? `<tr><td style="padding: 8px 0; color: #666;"><strong>Location:</strong></td><td style="padding: 8px 0;">${inquiryData.location}</td></tr>` : ''}
               ${inquiryData.notes ? `<tr><td style="padding: 8px 0; color: #666;"><strong>Project Scope:</strong></td><td style="padding: 8px 0;">${inquiryData.notes}</td></tr>` : ''}
             </table>
             <hr style="margin: 20px 0; border: none; border-top: 1px solid #E5E2DB;" />
-            <p style="margin: 0; font-size: 13px; color: #888;">You can manage and update this inquiry directly in the Marco India Admin Portal.</p>
+            <p style="margin: 0; font-size: 13px; color: #888;">You can manage and update this request directly in the Marco India Admin Portal.</p>
           </div>
         </div>
       `
@@ -130,7 +131,7 @@ export const sendInquiryNotification = async (inquiryData) => {
 
 export const sendContactNotification = async (contactData) => {
   try {
-    const recipients = config.email.adminEmails || ['faizanrock705@gmail.com', 'admin@marcoindia.in'];
+    const recipients = config.email.adminEmails || ['plex962@gmail.com', 'marcoindia@gmail.com'];
 
     await sendEmailMessage({
       to: recipients,
@@ -203,8 +204,31 @@ export const sendInquiryConfirmation = async (email, name, serviceType) => {
 
     await sendEmailMessage({
       to: email,
-      subject: 'Marco India — We received your service inquiry',
-      text: `Hi ${name},\n\nThank you for contacting Marco India. We have received your inquiry regarding ${serviceType}.\n\nOur engineering team will review your requirements and get in touch with you shortly.\n\nWarm regards,\nMarco India Team\nPhone: +91 9315501070 / +91 8092099110`
+      subject: `Marco India — We received your service request for ${serviceType}`,
+      text: `Hi ${name},\n\nThank you for contacting Marco India. We have received your request regarding ${serviceType}.\n\nOur engineering team will review your requirements and get in touch with you shortly.\n\nWarm regards,\nMarco India Team\nPhone: +91 9315501070 / +91 8092099110\nWebsite: https://marcoindia.in`,
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #E5E2DB; border-radius: 12px; overflow: hidden;">
+          <div style="background: #1A1A1A; padding: 24px; text-align: center; color: #ffffff;">
+            <h2 style="margin: 0; font-size: 22px; color: #C75B2B;">MARCO INDIA</h2>
+            <p style="margin: 6px 0 0 0; color: #C8C4BE; font-size: 14px;">Enterprise Infrastructure & Network Solutions</p>
+          </div>
+          <div style="padding: 24px; background: #ffffff; color: #1A1A1A;">
+            <p style="font-size: 16px; margin-top: 0;">Hi <strong>${name}</strong>,</p>
+            <p style="color: #444; line-height: 1.6;">Thank you for requesting service details with Marco India. We have successfully registered your inquiry for <strong>${serviceType}</strong>.</p>
+            <div style="padding: 14px; background: #FAF8F5; border-radius: 8px; margin: 18px 0; border-left: 4px solid #C75B2B;">
+              <p style="margin: 0; font-size: 14px; color: #666;"><strong>Service Requested:</strong></p>
+              <p style="margin: 4px 0 0 0; font-size: 16px; color: #1A1A1A; font-weight: bold;">${serviceType}</p>
+            </div>
+            <div style="padding: 14px; background: #FAF8F5; border-radius: 8px; margin: 18px 0;">
+              <p style="margin: 0; font-size: 14px; color: #666;"><strong>Direct Engineering Helpline:</strong></p>
+              <p style="margin: 6px 0 0 0; font-size: 15px; color: #C75B2B; font-weight: bold;">
+                📞 +91 9315501070 &nbsp;|&nbsp; +91 8092099110
+              </p>
+            </div>
+            <p style="margin: 0; font-size: 14px; color: #666;">Warm regards,<br><strong>Marco India Team</strong></p>
+          </div>
+        </div>
+      `
     });
   } catch (error) {
     console.error('[EmailService] Failed to send confirmation email to client:', error.message);
