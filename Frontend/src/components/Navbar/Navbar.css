@@ -315,11 +315,20 @@
 .navbar--scrolled .navbar__user-btn,
 .navbar--scrolled .navbar__logout-btn,
 .navbar--scrolled .navbar__hamburger {
-  color: var(--color-text-primary);
+  color: var(--color-text-primary, #1A1A1A) !important;
+}
+
+.navbar--scrolled .navbar__link:hover,
+.navbar--scrolled .navbar__phone:hover {
+  color: var(--color-accent, #C75B2B) !important;
+}
+
+.navbar--scrolled .navbar__link--active {
+  color: var(--color-accent, #C75B2B) !important;
 }
 
 .navbar--scrolled .navbar__hamburger:hover {
-  background: var(--color-bg-secondary);
+  background: var(--color-bg-secondary, #F5F3EE);
 }
 
 /* ---- Mobile Overlay ---- */

@@ -63,9 +63,11 @@ const Navbar = () => {
   }, []);
 
   const isServicesActive = location.pathname.startsWith('/services');
+  const isLightPage = location.pathname.startsWith('/admin') || location.pathname.startsWith('/profile');
+  const isScrolledOrLight = scrolled || isLightPage;
 
   return (
-    <header className={`navbar ${scrolled ? 'navbar--scrolled' : ''}`}>
+    <header className={`navbar ${isScrolledOrLight ? 'navbar--scrolled' : ''}`}>
       <nav className="navbar__inner container" aria-label="Main navigation">
         <Link to="/" className="navbar__logo">
           {/* <span className="navbar__logo-mark"></span> */}
