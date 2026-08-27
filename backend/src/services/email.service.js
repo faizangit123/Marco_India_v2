@@ -237,16 +237,19 @@ export const sendPasswordResetEmail = async (email, resetLink) => {
   }
 };
 
-export const verifyAndTestEmail = async (targetEmail = 'faizanrock705@gmail.com') => {
+export const verifyAndTestEmail = async (targetEmail = 'plex962@gmail.com') => {
   const isResend = Boolean(process.env.RESEND_API_KEY);
   const isSmtp = Boolean(config.email.user && config.email.password);
 
-  if (!isResend && !isSmtp) {
+  if (!isResend) {
     return {
       success: false,
-      status: 'MISSING_CREDENTIALS',
-      message: 'No email service configured. Please set RESEND_API_KEY in Render Environment to bypass Render cloud SMTP port blocks.',
-      hint: 'Get a free API key at https://resend.com (free 3,000 emails/month, 0 port blocks).'
+      status: 'RESEND_API_KEY_REQUIRED',
+      message: 'Render Free Tier blocks raw SMTP ports (25, 465, 587). Please add RESEND_API_KEY in your Render Dashboard Environment to activate 1-second HTTPS email delivery.',
+      resendKeyPresent: false,
+      smtpConfigured: isSmtp,
+      recipientTarget: targetEmail,
+      quickStep: 'Add RESEND_API_KEY=re_... in Render Dashboard -> Environment tab and click Save Changes.'
     };
   }
 
@@ -258,7 +261,7 @@ export const verifyAndTestEmail = async (targetEmail = 'faizanrock705@gmail.com'
       html: `
         <div style="font-family: Arial, sans-serif; padding: 20px; border: 2px solid #2D7A4F; border-radius: 8px;">
           <h2 style="color: #2D7A4F; margin-top: 0;">✅ Email Service is 100% Operational!</h2>
-          <p>This is a live test notification confirming that Marco India is successfully sending emails to <strong>${targetEmail}</strong> via <strong>${isResend ? 'Resend HTTPS API (Port 443)' : 'SMTP'}</strong>.</p>
+          <p>This is a live test notification confirming that Marco India is successfully sending emails to <strong>${targetEmail}</strong> via <strong>Resend HTTPS API (Port 443)</strong>.</p>
           <p style="color: #666; font-size: 13px;">Timestamp: ${new Date().toISOString()}</p>
         </div>
       `
@@ -269,18 +272,14 @@ export const verifyAndTestEmail = async (targetEmail = 'faizanrock705@gmail.com'
       status: 'SENT_SUCCESSFULLY',
       provider: result.provider,
       recipient: targetEmail,
-      details: result
+      emailId: result.id
     };
   } catch (error) {
-    const isTimeout = error.message?.includes('ETIMEDOUT') || error.code === 'ETIMEDOUT';
     return {
       success: false,
-      status: isTimeout ? 'SMTP_BLOCKED_BY_RENDER' : 'SEND_FAILED',
+      status: 'SEND_FAILED',
       error: error.message,
-      code: error.code,
-      hint: isTimeout 
-        ? 'Render Free Tier blocks raw SMTP ports (25, 465, 587). The standard fix on Render is to add RESEND_API_KEY (from resend.com) which sends via HTTPS port 443 without port restrictions.'
-        : error.message
+      hint: error.message
     };
   }
 };
