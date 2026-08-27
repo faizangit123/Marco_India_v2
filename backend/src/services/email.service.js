@@ -9,6 +9,7 @@ const isEmailConfigured = () => {
 
 const getTransporter = () => {
   if (!transporter && isEmailConfigured()) {
+    const cleanPassword = (config.email.password || '').replace(/\s+/g, '');
     const isGmail = (config.email.host && config.email.host.includes('gmail')) || 
                     (process.env.EMAIL_SERVICE && process.env.EMAIL_SERVICE.toLowerCase() === 'gmail');
 
@@ -17,7 +18,7 @@ const getTransporter = () => {
         service: 'gmail',
         auth: {
           user: config.email.user,
-          pass: config.email.password
+          pass: cleanPassword
         }
       });
     } else {
@@ -27,7 +28,7 @@ const getTransporter = () => {
         secure: Number(config.email.port) === 465,
         auth: {
           user: config.email.user,
-          pass: config.email.password
+          pass: cleanPassword
         },
         connectionTimeout: 10000,
         greetingTimeout: 10000,
