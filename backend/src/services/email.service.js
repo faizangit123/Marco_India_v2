@@ -46,9 +46,38 @@ const getTransporter = () => {
   return transporter;
 };
 
-// Unified sender: Uses Resend HTTPS API on Port 443 (which is never blocked on Render) or Nodemailer SMTP
+// Unified sender: Uses Brevo HTTPS API, Resend HTTPS API, or Nodemailer SMTP
 export const sendEmailMessage = async ({ to, subject, text, html }) => {
-  // 1. Primary Cloud Option: Resend HTTPS API (Port 443)
+  // 1. Brevo (Sendinblue) HTTPS API (Port 443 — sends to ANY customer email with zero domain requirements)
+  if (process.env.BREVO_API_KEY) {
+    const toList = (Array.isArray(to) ? to : [to]).map(email => ({ email }));
+    const senderEmail = process.env.EMAIL_USER || 'plex962@gmail.com';
+    const senderName = 'Marco India';
+
+    const res = await fetch('https://api.brevo.com/v3/smtp/email', {
+      method: 'POST',
+      headers: {
+        'api-key': process.env.BREVO_API_KEY,
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify({
+        sender: { name: senderName, email: senderEmail },
+        to: toList,
+        subject: subject,
+        textContent: text,
+        htmlContent: html || text
+      })
+    });
+
+    const data = await res.json();
+    if (!res.ok) {
+      throw new Error(`Brevo error: ${data.message || JSON.stringify(data)}`);
+    }
+    return { success: true, provider: 'brevo', messageId: data.messageId };
+  }
+
+  // 2. Resend HTTPS API (Port 443)
   if (process.env.RESEND_API_KEY) {
     const fromAddr = process.env.RESEND_FROM || 'onboarding@resend.dev';
     const toList = Array.isArray(to) ? to : [to];
@@ -282,18 +311,19 @@ export const sendPasswordResetEmail = async (email, resetLink) => {
 };
 
 export const verifyAndTestEmail = async (targetEmail = 'plex962@gmail.com') => {
+  const isBrevo = Boolean(process.env.BREVO_API_KEY);
   const isResend = Boolean(process.env.RESEND_API_KEY);
   const isSmtp = Boolean(config.email.user && config.email.password);
 
-  if (!isResend) {
+  if (!isBrevo && !isResend && !isSmtp) {
     return {
       success: false,
-      status: 'RESEND_API_KEY_REQUIRED',
-      message: 'Render Free Tier blocks raw SMTP ports (25, 465, 587). Please add RESEND_API_KEY in your Render Dashboard Environment to activate 1-second HTTPS email delivery.',
-      resendKeyPresent: false,
+      status: 'API_KEY_REQUIRED',
+      message: 'Render Free Tier blocks raw SMTP ports (25, 465, 587). Please add BREVO_API_KEY or RESEND_API_KEY in Render Environment.',
+      resendKeyPresent: isResend,
+      brevoKeyPresent: isBrevo,
       smtpConfigured: isSmtp,
       recipientTarget: targetEmail,
-      quickStep: 'Add RESEND_API_KEY=re_... in Render Dashboard -> Environment tab and click Save Changes.'
     };
   }
 
@@ -305,7 +335,7 @@ export const verifyAndTestEmail = async (targetEmail = 'plex962@gmail.com') => {
       html: `
         <div style="font-family: Arial, sans-serif; padding: 20px; border: 2px solid #2D7A4F; border-radius: 8px;">
           <h2 style="color: #2D7A4F; margin-top: 0;">✅ Email Service is 100% Operational!</h2>
-          <p>This is a live test notification confirming that Marco India is successfully sending emails to <strong>${targetEmail}</strong> via <strong>Resend HTTPS API (Port 443)</strong>.</p>
+          <p>This is a live test notification confirming that Marco India is successfully sending emails to <strong>${targetEmail}</strong> via <strong>${isBrevo ? 'Brevo HTTPS API' : (isResend ? 'Resend HTTPS API' : 'SMTP')}</strong>.</p>
           <p style="color: #666; font-size: 13px;">Timestamp: ${new Date().toISOString()}</p>
         </div>
       `
@@ -316,7 +346,7 @@ export const verifyAndTestEmail = async (targetEmail = 'plex962@gmail.com') => {
       status: 'SENT_SUCCESSFULLY',
       provider: result.provider,
       recipient: targetEmail,
-      emailId: result.id
+      details: result
     };
   } catch (error) {
     return {
