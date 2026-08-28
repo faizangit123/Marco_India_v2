@@ -7,7 +7,7 @@ const Settings = () => {
   const [successMessage, setSuccessMessage] = useState('');
   const [settings, setSettings] = useState({
     siteName: 'Marco India',
-    contactEmail: 'marcoindia@gmail.com',
+    contactEmail: 'marcoindia890@gmail.com',
     contactPhone: '+91 8092099110 (Main) / +91 9315501070',
     address: 'ROAD no-8 Jawahar Nagar Mango, Jamshedpur, Jharkhand-831012',
     enableNotifications: true,

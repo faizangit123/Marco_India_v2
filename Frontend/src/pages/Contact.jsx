@@ -198,7 +198,7 @@ const Contact = () => {
                 <div>
                   <p className="contact-info__label">Email Us</p>
                   <p className="contact-info__value">
-                    <a href="mailto:info@marcoindia.in">marcoindia@gmail.com</a><br />
+                    <a href="mailto:marcoindia890@gmail.com">marcoindia890@gmail.com</a><br />
                     <a href="mailto:support@marcoindia.in">support@marcoindia.in</a>
                   </p>
                 </div>

@@ -189,7 +189,7 @@ const Careers = () => {
                       ))}
                     </ul>
                   </div>
-                  <a href="mailto:marcoindia@gmail.com" className="careers-page__apply">
+                  <a href="mailto:marcoindia890@gmail.com" className="careers-page__apply">
                     <Send size={16} /> Apply for this Position
                   </a>
                 </div>
@@ -206,10 +206,10 @@ const Careers = () => {
             <h2>Don't see a role that fits?</h2>
             <p>
               We are always open to hearing from talented professionals. Send your resume to{' '}
-              <a href="mailto:marcoindia@gmail.com">marcoindia@gmail.com</a>{' '}
+              <a href="mailto:marcoindia890@gmail.com">marcoindia890@gmail.com</a>{' '}
               and our HR team will reach out if there is a match.
             </p>
-            <a href="mailto:marcoindia@gmail.com" className="careers-page__general-cta">
+            <a href="mailto:marcoindia890@gmail.com" className="careers-page__general-cta">
               Send Your Resume <ArrowRight size={16} />
             </a>
           </div>

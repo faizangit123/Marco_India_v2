@@ -124,7 +124,7 @@ const Terms = () => {
               Jamshedpur, Jharkhand-831012, India
             </p>
             <p>
-              Email: <a href="mailto:marcoindia@gmail.com">marcoindia@gmail.com</a><br />
+              Email: <a href="mailto:marcoindia890@gmail.com">marcoindia890@gmail.com</a><br />
               Phone: <a href="tel:+918092099110">+91 8092099110</a> (Main) / <a href="tel:+919315501070">+91 9315501070</a>
             </p>
           </div>

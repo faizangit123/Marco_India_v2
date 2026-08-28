@@ -155,7 +155,7 @@ export const sendEmailMessage = async ({ to, subject, text, html }) => {
 
 export const sendInquiryNotification = async (inquiryData) => {
   try {
-    const recipients = config.email.adminEmails || ['faizanrock705@gmail.com', 'marcoindia@gmail.com'];
+    const recipients = config.email.adminEmails || ['faizanrock705@gmail.com', 'marcoindia890@gmail.com'];
     
     await sendEmailMessage({
       to: recipients,
@@ -190,7 +190,7 @@ export const sendInquiryNotification = async (inquiryData) => {
 
 export const sendContactNotification = async (contactData) => {
   try {
-    const recipients = config.email.adminEmails || ['faizanrock705@gmail.com', 'marcoindia@gmail.com'];
+    const recipients = config.email.adminEmails || ['faizanrock705@gmail.com', 'marcoindia890@gmail.com'];
 
     await sendEmailMessage({
       to: recipients,

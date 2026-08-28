@@ -125,7 +125,7 @@ const Footer = () => {
             <li className="footer__contact-item">
               <Mail size={18} className="footer__contact-icon" />
               <div>
-                <a href="mailto:info@marcoindia.in" className="footer__contact-link">marcoindia@gmail.com</a><br />
+                <a href="mailto:marcoindia890@gmail.com" className="footer__contact-link">marcoindia890@gmail.com</a><br />
                 <a href="mailto:support@marcoindia.in" className="footer__contact-link">support@marcoindia.in</a>
               </div>
             </li>

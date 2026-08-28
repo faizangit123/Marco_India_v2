@@ -151,6 +151,6 @@ JWT-based authentication flow with automatic token refresh:
 
 **Marco India**  
 📍 ROAD no-8 Jawahar Nagar Mango, Jamshedpur, Jharkhand-831012, India  
-📞 **+91 9315501070** / **+91 8092099110**  
-📧 [marcoindia@gmail.com](mailto:marcoindia@gmail.com)  
+📞 **+91 8092099110** (Main) / **+91 9315501070**  
+📧 [marcoindia890@gmail.com](mailto:marcoindia890@gmail.com)  
 🌐 [marco-india-v2.vercel.app](https://marco-india-v2.vercel.app)
