@@ -187,8 +187,8 @@ const Contact = () => {
                 <div>
                   <p className="contact-info__label">Call Us</p>
                   <p className="contact-info__value">
-                    <a href="tel:+919315501070">+91 9315501070</a><br />
-                    <a href="tel:+918092099110">+91 8092099110</a>
+                    <a href="tel:+918092099110">+91 8092099110</a> (Main)<br />
+                    <a href="tel:+919315501070">+91 9315501070</a>
                   </p>
                 </div>
               </div>

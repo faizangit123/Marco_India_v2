@@ -231,7 +231,7 @@ export const sendContactConfirmation = async (contactData) => {
     await sendEmailMessage({
       to: contactData.email,
       subject: 'Marco India — Thank you for reaching out',
-      text: `Hi ${contactData.name},\n\nThank you for contacting Marco India. We have received your message regarding ${contactData.serviceType || 'our services'}.\n\nOur engineering team will review your message and get back to you shortly.\n\nWarm regards,\nMarco India Team\nPhone: +91 9315501070 / +91 8092099110\nWebsite: https://marcoindia.in`,
+      text: `Hi ${contactData.name},\n\nThank you for contacting Marco India. We have received your message regarding ${contactData.serviceType || 'our services'}.\n\nOur engineering team will review your message and get back to you shortly.\n\nWarm regards,\nMarco India Team\nPhone: +91 8092099110 (Main) / +91 9315501070\nWebsite: https://marcoindia.in`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #E5E2DB; border-radius: 12px; overflow: hidden;">
           <div style="background: #1A1A1A; padding: 24px; text-align: center; color: #ffffff;">
@@ -244,7 +244,7 @@ export const sendContactConfirmation = async (contactData) => {
             <div style="padding: 14px; background: #FAF8F5; border-radius: 8px; margin: 18px 0;">
               <p style="margin: 0; font-size: 14px; color: #666;"><strong>Need immediate assistance?</strong></p>
               <p style="margin: 6px 0 0 0; font-size: 15px; color: #C75B2B; font-weight: bold;">
-                📞 +91 9315501070 &nbsp;|&nbsp; +91 8092099110
+                📞 +91 8092099110 (Main) &nbsp;|&nbsp; +91 9315501070
               </p>
             </div>
             <p style="margin: 0; font-size: 14px; color: #666;">Warm regards,<br><strong>Marco India Team</strong></p>
@@ -265,7 +265,7 @@ export const sendInquiryConfirmation = async (email, name, serviceType) => {
     await sendEmailMessage({
       to: email,
       subject: `Marco India — We received your service request for ${serviceType}`,
-      text: `Hi ${name},\n\nThank you for contacting Marco India. We have received your request regarding ${serviceType}.\n\nOur engineering team will review your requirements and get in touch with you shortly.\n\nWarm regards,\nMarco India Team\nPhone: +91 9315501070 / +91 8092099110\nWebsite: https://marcoindia.in`,
+      text: `Hi ${name},\n\nThank you for contacting Marco India. We have received your request regarding ${serviceType}.\n\nOur engineering team will review your requirements and get in touch with you shortly.\n\nWarm regards,\nMarco India Team\nPhone: +91 8092099110 (Main) / +91 9315501070\nWebsite: https://marcoindia.in`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #E5E2DB; border-radius: 12px; overflow: hidden;">
           <div style="background: #1A1A1A; padding: 24px; text-align: center; color: #ffffff;">
@@ -282,7 +282,7 @@ export const sendInquiryConfirmation = async (email, name, serviceType) => {
             <div style="padding: 14px; background: #FAF8F5; border-radius: 8px; margin: 18px 0;">
               <p style="margin: 0; font-size: 14px; color: #666;"><strong>Direct Engineering Helpline:</strong></p>
               <p style="margin: 6px 0 0 0; font-size: 15px; color: #C75B2B; font-weight: bold;">
-                📞 +91 9315501070 &nbsp;|&nbsp; +91 8092099110
+                📞 +91 8092099110 (Main) &nbsp;|&nbsp; +91 9315501070
               </p>
             </div>
             <p style="margin: 0; font-size: 14px; color: #666;">Warm regards,<br><strong>Marco India Team</strong></p>
