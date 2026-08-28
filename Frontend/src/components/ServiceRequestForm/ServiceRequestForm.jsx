@@ -18,6 +18,7 @@ const ServiceRequestForm = ({ preselectedService = '' }) => {
   const { user } = useAuth();
   const [form, setForm] = useState({ 
     name: user?.name || '', 
+    email: user?.email || '',
     phone: user?.phone || '', 
     service: preselectedService 
   });
@@ -30,6 +31,7 @@ const ServiceRequestForm = ({ preselectedService = '' }) => {
       setForm(p => ({
         ...p,
         name: p.name || user.name || '',
+        email: p.email || user.email || '',
         phone: p.phone || user.phone || ''
       }));
     }
@@ -38,12 +40,19 @@ const ServiceRequestForm = ({ preselectedService = '' }) => {
   const validate = () => {
     const newErrors = {};
     const name = form.name.trim();
+    const email = form.email.trim();
     const phone = form.phone.trim();
 
     if (!name) {
       newErrors.name = 'Name is required';
     } else if (name.length > 100) {
       newErrors.name = 'Name must be under 100 characters';
+    }
+
+    if (!email) {
+      newErrors.email = 'Email is required to receive confirmation';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      newErrors.email = 'Enter a valid email address';
     }
 
     if (!phone) {
@@ -78,13 +87,13 @@ const ServiceRequestForm = ({ preselectedService = '' }) => {
     try {
       await apiClient.post('/api/inquiries/', {
         name: form.name.trim(),
+        email: form.email.trim(),
         phone: form.phone.trim(),
         service_type: form.service,
-        email: user?.email || '',
       });
       setStatus('success');
-      setServerMsg('Thank you! Your request has been registered and a confirmation was sent.');
-      setForm({ name: user?.name || '', phone: user?.phone || '', service: '' });
+      setServerMsg('Thank you! Your request has been registered and a confirmation was sent to your email.');
+      setForm({ name: user?.name || '', email: user?.email || '', phone: user?.phone || '', service: '' });
     } catch (err) {
       setStatus('error');
       const msg = err.response?.data?.detail || 'Something went wrong. Please try again.';
@@ -125,6 +134,20 @@ const ServiceRequestForm = ({ preselectedService = '' }) => {
             autoComplete="name"
           />
           {errors.name && <span className="srf__error">{errors.name}</span>}
+        </div>
+
+        <div className="srf__field">
+          <input
+            type="email"
+            name="email"
+            value={form.email}
+            onChange={handleChange}
+            placeholder="Your Email Address"
+            className={`srf__input ${errors.email ? 'srf__input--error' : ''}`}
+            maxLength={100}
+            autoComplete="email"
+          />
+          {errors.email && <span className="srf__error">{errors.email}</span>}
         </div>
 
         <div className="srf__field">

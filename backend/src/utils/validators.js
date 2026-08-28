@@ -28,6 +28,7 @@ export const passwordResetConfirmSchema = z.object({
 
 export const inquirySchema = z.object({
   name: z.string().min(2),
+  email: z.string().email().optional().or(z.literal('')),
   phone: z.string().regex(/^\+?[0-9\s-]+$/, "Invalid phone number"),
   service_type: z.string()
 });
