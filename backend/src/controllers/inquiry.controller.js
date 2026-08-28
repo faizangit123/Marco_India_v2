@@ -49,19 +49,23 @@ export const listCreate = async (req, res, next) => {
         userId: req.user ? req.user.id : null
       });
 
-      sendInquiryNotification({
-        id: inquiry.id,
-        name: inquiry.name,
-        phone: inquiry.phone,
-        email: userEmail || '',
-        serviceType: inquiry.serviceType,
-        notes: notes || '',
-        location: location || ''
-      }).catch(console.error);
+      const emailTasks = [
+        sendInquiryNotification({
+          id: inquiry.id,
+          name: inquiry.name,
+          phone: inquiry.phone,
+          email: userEmail || '',
+          serviceType: inquiry.serviceType,
+          notes: notes || '',
+          location: location || ''
+        })
+      ];
 
       if (userEmail) {
-        sendInquiryConfirmation(userEmail, name, service_type).catch(console.error);
+        emailTasks.push(sendInquiryConfirmation(userEmail, name, service_type));
       }
+
+      await Promise.allSettled(emailTasks);
 
       res.status(201).json({
         id: inquiry.id,

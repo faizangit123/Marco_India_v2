@@ -22,10 +22,11 @@ export const create = async (req, res, next) => {
       name, email, phone, serviceType: service_type, message
     });
 
-    sendContactNotification(contact).catch(console.error);
+    const emailTasks = [sendContactNotification(contact)];
     if (contact.email) {
-      sendContactConfirmation(contact).catch(console.error);
+      emailTasks.push(sendContactConfirmation(contact));
     }
+    await Promise.allSettled(emailTasks);
 
     res.status(201).json(formatContact(contact));
   } catch (error) {
