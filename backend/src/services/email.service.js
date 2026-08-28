@@ -46,98 +46,111 @@ const getTransporter = () => {
   return transporter;
 };
 
-// Unified sender: Uses Brevo HTTPS API, Resend HTTPS API, or Nodemailer SMTP
+// Unified sender: Uses Brevo HTTPS API with auto-fallback to Resend HTTPS API and SMTP
 export const sendEmailMessage = async ({ to, subject, text, html }) => {
-  // 1. Brevo (Sendinblue) HTTPS API (Port 443 — sends to ANY customer email with zero domain requirements)
-  if (process.env.BREVO_API_KEY) {
-    const toList = (Array.isArray(to) ? to : [to]).map(email => ({ email }));
-    const senderEmail = process.env.EMAIL_USER || 'faizanrock705@gmail.com';
-    const senderName = 'Marco India';
+  let lastError = null;
 
-    const res = await fetch('https://api.brevo.com/v3/smtp/email', {
-      method: 'POST',
-      headers: {
-        'api-key': process.env.BREVO_API_KEY,
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
-      body: JSON.stringify({
-        sender: { name: senderName, email: senderEmail },
-        to: toList,
-        subject: subject,
-        textContent: text,
-        htmlContent: html || text
-      })
-    });
+  // 1. Tier 1: Brevo (Sendinblue) HTTPS API (Port 443 — sends to any recipient)
+  const brevoKey = (process.env.BREVO_API_KEY || '').trim().replace(/^['"]|['"]$/g, '');
+  if (brevoKey) {
+    try {
+      const toList = (Array.isArray(to) ? to : [to]).map(email => ({ email: email.trim() }));
+      const senderEmail = (process.env.EMAIL_USER || 'faizanrock705@gmail.com').trim();
+      const senderName = 'Marco India';
 
-    const data = await res.json();
-    if (!res.ok) {
-      throw new Error(`Brevo error: ${data.message || JSON.stringify(data)}`);
+      const res = await fetch('https://api.brevo.com/v3/smtp/email', {
+        method: 'POST',
+        headers: {
+          'api-key': brevoKey,
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          sender: { name: senderName, email: senderEmail },
+          to: toList,
+          subject: subject,
+          textContent: text,
+          htmlContent: html || text
+        })
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        return { success: true, provider: 'brevo', messageId: data.messageId };
+      }
+      console.warn('[EmailService] Brevo API notice (will attempt fallback):', data.message || JSON.stringify(data));
+      lastError = new Error(`Brevo: ${data.message || JSON.stringify(data)}`);
+    } catch (err) {
+      console.warn('[EmailService] Brevo network notice (will attempt fallback):', err.message);
+      lastError = err;
     }
-    return { success: true, provider: 'brevo', messageId: data.messageId };
   }
 
-  // 2. Resend HTTPS API (Port 443)
-  if (process.env.RESEND_API_KEY) {
-    const fromAddr = process.env.RESEND_FROM || 'onboarding@resend.dev';
-    const toList = Array.isArray(to) ? to : [to];
+  // 2. Tier 2: Resend HTTPS API (Port 443)
+  const resendKey = (process.env.RESEND_API_KEY || '').trim().replace(/^['"]|['"]$/g, '');
+  if (resendKey) {
+    try {
+      const fromAddr = (process.env.RESEND_FROM || 'onboarding@resend.dev').trim();
+      const toList = (Array.isArray(to) ? to : [to]).map(e => e.trim());
 
-    // Dispatch to each recipient individually so sandbox restrictions never block other recipients
-    const results = await Promise.allSettled(
-      toList.map(async (recipient) => {
-        const res = await fetch('https://api.resend.com/emails', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            from: fromAddr,
-            to: [recipient],
-            subject: subject,
-            text: text,
-            html: html
-          })
-        });
-        
-        const data = await res.json();
-        if (!res.ok) {
-          throw new Error(`[${recipient}] ${data.message || JSON.stringify(data)}`);
-        }
-        return { recipient, id: data.id };
-      })
-    );
+      const results = await Promise.allSettled(
+        toList.map(async (recipient) => {
+          const res = await fetch('https://api.resend.com/emails', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${resendKey}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              from: fromAddr,
+              to: [recipient],
+              subject: subject,
+              text: text,
+              html: html
+            })
+          });
+          
+          const data = await res.json();
+          if (!res.ok) {
+            throw new Error(`[${recipient}] ${data.message || JSON.stringify(data)}`);
+          }
+          return { recipient, id: data.id };
+        })
+      );
 
-    const successful = results.filter(r => r.status === 'fulfilled').map(r => r.value);
-    const failed = results.filter(r => r.status === 'rejected').map(r => r.reason.message);
+      const successful = results.filter(r => r.status === 'fulfilled').map(r => r.value);
+      const failed = results.filter(r => r.status === 'rejected').map(r => r.reason.message);
 
-    if (failed.length > 0) {
-      console.warn('[EmailService] Sandbox notice for unverified recipients:', failed.join('; '));
+      if (successful.length > 0) {
+        return { success: true, provider: 'resend', delivered: successful, failed };
+      }
+      lastError = new Error(failed.join('; ') || 'Resend delivery failed');
+    } catch (err) {
+      console.warn('[EmailService] Resend network notice:', err.message);
+      lastError = err;
     }
-
-    if (successful.length === 0 && failed.length > 0) {
-      throw new Error(failed[0]);
-    }
-
-    return { success: true, provider: 'resend', delivered: successful, failed };
   }
 
-  // 2. SMTP Transport
+  // 3. Tier 3: SMTP Transport (fallback)
   const client = getTransporter();
   if (client) {
-    const fromAddr = config.email.from || `"Marco India" <${config.email.user}>`;
-    const toAddr = Array.isArray(to) ? to.join(',') : to;
-    const info = await client.sendMail({
-      from: fromAddr,
-      to: toAddr,
-      subject,
-      text,
-      html
-    });
-    return { success: true, provider: 'smtp', messageId: info.messageId };
+    try {
+      const fromAddr = config.email.from || `"Marco India" <${config.email.user}>`;
+      const toAddr = Array.isArray(to) ? to.join(',') : to;
+      const info = await client.sendMail({
+        from: fromAddr,
+        to: toAddr,
+        subject,
+        text,
+        html
+      });
+      return { success: true, provider: 'smtp', messageId: info.messageId };
+    } catch (err) {
+      lastError = err;
+    }
   }
 
-  throw new Error('No email service configured. Render Free Tier blocks direct SMTP (ports 25, 465, 587). Please provide RESEND_API_KEY.');
+  throw lastError || new Error('No email provider succeeded. Please check your Brevo/Resend API keys in Render.');
 };
 
 export const sendInquiryNotification = async (inquiryData) => {
