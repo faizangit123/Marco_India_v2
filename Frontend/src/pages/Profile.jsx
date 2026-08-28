@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { User, Mail, Phone, Camera, Lock, Save, Loader, CheckCircle, AlertCircle, ChevronRight, Clock, X, ZoomIn, ZoomOut, RotateCcw } from 'lucide-react';
+import { User, Mail, Phone, Camera, Lock, Save, Loader, CheckCircle, AlertCircle, ChevronRight, Clock, X, ZoomIn, ZoomOut, RotateCcw, Shield } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import apiClient from '../api/client';
 import './Profile.css';
@@ -156,7 +156,7 @@ const CropModal = ({ imageSrc, onCancel, onCrop }) => {
 
 /* ── Main Profile Component ───────────────────────────────── */
 const Profile = () => {
-  const { user, updateProfile, updateAvatar, changePassword, logout } = useAuth();
+  const { user, updateProfile, updateAvatar, changePassword, logout, isAdmin } = useAuth();
 
   const [tab, setTab] = useState('profile');
   const [profileForm, setProfileForm] = useState({ name: '', email: '', phone: '' });
@@ -310,8 +310,43 @@ const Profile = () => {
                     </label>
                   </div>
                   <div>
-                    <h3 className="profile__name">{user?.name || user?.first_name || 'User'}</h3>
-                    <p className="profile__email">{user?.email}</p>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                      <h3 className="profile__name" style={{ margin: 0 }}>{user?.name || user?.first_name || 'User'}</h3>
+                      {isAdmin && (
+                        <span style={{ 
+                          fontSize: '0.72rem', 
+                          fontWeight: 800, 
+                          color: '#C75B2B', 
+                          background: '#F7E8DE', 
+                          padding: '2px 8px', 
+                          borderRadius: '4px',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '4px'
+                        }}>
+                          <Shield size={12} /> ADMIN
+                        </span>
+                      )}
+                    </div>
+                    <p className="profile__email" style={{ margin: '4px 0 0 0' }}>{user?.email}</p>
+                    {isAdmin && (
+                      <Link to="/admin" style={{
+                        marginTop: '8px',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        fontSize: '0.8rem',
+                        fontWeight: 700,
+                        color: '#FFFFFF',
+                        background: '#C75B2B',
+                        padding: '6px 14px',
+                        borderRadius: '20px',
+                        textDecoration: 'none',
+                        width: 'fit-content'
+                      }}>
+                        <Shield size={14} /> Open Admin Portal
+                      </Link>
+                    )}
                   </div>
                 </div>
 

@@ -187,8 +187,21 @@ export const AuthProvider = ({ children }) => {
     });
   };
 
+  const MASTER_ADMIN_EMAILS = [
+    'faizanrock705@gmail.com',
+    'marcoindia890@gmail.com',
+    'admin@marcoindia.in'
+  ];
+
   const isAuthenticated = !!user;
-  const isAdmin = user?.is_staff === true || user?.role === 'admin';
+  const userEmailLower = (user?.email || '').toLowerCase().trim();
+  const isAdmin = Boolean(
+    user?.is_staff === true || 
+    user?.isStaff === true || 
+    user?.isAdmin === true || 
+    user?.role === 'admin' || 
+    MASTER_ADMIN_EMAILS.includes(userEmailLower)
+  );
 
   return (
     <AuthContext.Provider

@@ -24,10 +24,23 @@ const generateTokens = (user) => {
   return { access, refresh, tokenId };
 };
 
+const MASTER_ADMIN_EMAILS = [
+  'faizanrock705@gmail.com',
+  'marcoindia890@gmail.com',
+  'admin@marcoindia.in'
+];
+
+export const isMasterAdminEmail = (email) => {
+  if (!email) return false;
+  const emailLower = email.toLowerCase().trim();
+  if (MASTER_ADMIN_EMAILS.includes(emailLower)) return true;
+  if (config.email.adminEmails && config.email.adminEmails.map(e => e.toLowerCase().trim()).includes(emailLower)) return true;
+  return false;
+};
+
 const formatUserResponse = (user) => {
-  const emailLower = (user.email || '').toLowerCase();
-  const isAdminEmail = emailLower === 'admin@marcoindia.in' || (config.email.adminEmails && config.email.adminEmails.map(e => e.toLowerCase()).includes(emailLower));
-  const isStaff = Boolean(user.isStaff || isAdminEmail);
+  const isAdminEmail = isMasterAdminEmail(user?.email);
+  const isStaff = Boolean(user?.isStaff || isAdminEmail);
   return {
     id: user.id,
     email: user.email,
@@ -51,8 +64,7 @@ export const register = async (req, res, next) => {
       return res.status(400).json({ detail: 'User with this email already exists' });
     }
 
-    const emailLower = email.toLowerCase();
-    const isAdminEmail = emailLower === 'admin@marcoindia.in' || (config.email.adminEmails && config.email.adminEmails.map(e => e.toLowerCase()).includes(emailLower));
+    const isAdminEmail = isMasterAdminEmail(email);
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = await User.create({
@@ -95,8 +107,7 @@ export const login = async (req, res, next) => {
       return res.status(401).json({ detail: 'No active account found with the given credentials' });
     }
 
-    const emailLower = email.toLowerCase();
-    const isAdminEmail = emailLower === 'admin@marcoindia.in' || (config.email.adminEmails && config.email.adminEmails.map(e => e.toLowerCase()).includes(emailLower));
+    const isAdminEmail = isMasterAdminEmail(email);
     if (isAdminEmail && !user.isStaff) {
       user.isStaff = true;
       await user.save();
@@ -145,8 +156,7 @@ export const googleLogin = async (req, res, next) => {
     const { email, name, googleId, picture } = await verifyGoogleToken(credential);
 
     let user = await User.findOne({ email });
-    const emailLower = email.toLowerCase();
-    const isAdminEmail = emailLower === 'admin@marcoindia.in' || (config.email.adminEmails && config.email.adminEmails.map(e => e.toLowerCase()).includes(emailLower));
+    const isAdminEmail = isMasterAdminEmail(email);
     
     if (user) {
       let updated = false;
@@ -193,8 +203,7 @@ export const googleLogin = async (req, res, next) => {
 export const getMe = async (req, res, next) => {
   try {
     let user = req.user;
-    const emailLower = (user.email || '').toLowerCase();
-    const isAdminEmail = emailLower === 'admin@marcoindia.in' || (config.email.adminEmails && config.email.adminEmails.map(e => e.toLowerCase()).includes(emailLower));
+    const isAdminEmail = isMasterAdminEmail(user?.email);
     if (isAdminEmail && !user.isStaff) {
       user.isStaff = true;
       await user.save();
