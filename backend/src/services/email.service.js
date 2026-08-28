@@ -252,6 +252,7 @@ export const sendContactConfirmation = async (contactData) => {
         </div>
       `
     });
+    console.log(`[EmailService] Contact confirmation successfully sent to client: ${contactData.email}`);
   } catch (error) {
     console.error('[EmailService] Failed to send client confirmation email:', error.message);
   }
@@ -289,6 +290,7 @@ export const sendInquiryConfirmation = async (email, name, serviceType) => {
         </div>
       `
     });
+    console.log(`[EmailService] Inquiry confirmation successfully sent to client: ${email}`);
   } catch (error) {
     console.error('[EmailService] Failed to send confirmation email to client:', error.message);
   }
