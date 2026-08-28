@@ -23,9 +23,9 @@ const getTransporter = () => {
           user: config.email.user,
           pass: cleanPassword
         },
-        connectionTimeout: 10000,
-        greetingTimeout: 10000,
-        socketTimeout: 15000
+        connectionTimeout: 3000,
+        greetingTimeout: 3000,
+        socketTimeout: 4000
       });
     } else {
       const port = Number(config.email.port) || 465;
@@ -37,9 +37,9 @@ const getTransporter = () => {
           user: config.email.user,
           pass: cleanPassword
         },
-        connectionTimeout: 10000,
-        greetingTimeout: 10000,
-        socketTimeout: 15000
+        connectionTimeout: 3000,
+        greetingTimeout: 3000,
+        socketTimeout: 4000
       });
     }
   }
