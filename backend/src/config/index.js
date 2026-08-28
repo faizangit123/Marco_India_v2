@@ -22,7 +22,7 @@ export const config = {
     from: process.env.EMAIL_FROM || 'Marco India <onboarding@resend.dev>',
     adminEmails: process.env.ADMIN_EMAILS 
       ? process.env.ADMIN_EMAILS.split(',').map(e => e.trim()) 
-      : ['plex962@gmail.com', 'marcoindia@gmail.com', 'faizanrock705@gmail.com'],
+      : ['faizanrock705@gmail.com', 'marcoindia@gmail.com', 'admin@marcoindia.in'],
   },
   env: process.env.NODE_ENV || 'development'
 };

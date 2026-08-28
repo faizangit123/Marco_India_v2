@@ -51,7 +51,7 @@ export const sendEmailMessage = async ({ to, subject, text, html }) => {
   // 1. Brevo (Sendinblue) HTTPS API (Port 443 — sends to ANY customer email with zero domain requirements)
   if (process.env.BREVO_API_KEY) {
     const toList = (Array.isArray(to) ? to : [to]).map(email => ({ email }));
-    const senderEmail = process.env.EMAIL_USER || 'plex962@gmail.com';
+    const senderEmail = process.env.EMAIL_USER || 'faizanrock705@gmail.com';
     const senderName = 'Marco India';
 
     const res = await fetch('https://api.brevo.com/v3/smtp/email', {
@@ -142,7 +142,7 @@ export const sendEmailMessage = async ({ to, subject, text, html }) => {
 
 export const sendInquiryNotification = async (inquiryData) => {
   try {
-    const recipients = config.email.adminEmails || ['plex962@gmail.com', 'marcoindia@gmail.com'];
+    const recipients = config.email.adminEmails || ['faizanrock705@gmail.com', 'marcoindia@gmail.com'];
     
     await sendEmailMessage({
       to: recipients,
@@ -177,7 +177,7 @@ export const sendInquiryNotification = async (inquiryData) => {
 
 export const sendContactNotification = async (contactData) => {
   try {
-    const recipients = config.email.adminEmails || ['plex962@gmail.com', 'marcoindia@gmail.com'];
+    const recipients = config.email.adminEmails || ['faizanrock705@gmail.com', 'marcoindia@gmail.com'];
 
     await sendEmailMessage({
       to: recipients,
@@ -310,7 +310,7 @@ export const sendPasswordResetEmail = async (email, resetLink) => {
   }
 };
 
-export const verifyAndTestEmail = async (targetEmail = 'plex962@gmail.com') => {
+export const verifyAndTestEmail = async (targetEmail = 'faizanrock705@gmail.com') => {
   const isBrevo = Boolean(process.env.BREVO_API_KEY);
   const isResend = Boolean(process.env.RESEND_API_KEY);
   const isSmtp = Boolean(config.email.user && config.email.password);
